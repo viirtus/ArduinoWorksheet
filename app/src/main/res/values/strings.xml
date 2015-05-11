@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Arduino WorkSheet</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="led_colors">
+        <item>Красный</item>
+        <item>Зеленый</item>
+        <item>Синий</item>
+    </string-array>
+
+</resources>

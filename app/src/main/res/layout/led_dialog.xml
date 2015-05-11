@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/servo_title_et"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="120dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="20dp"
+        android:textSize="8pt"/>
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/led_command_on_et"
+        android:layout_marginTop="20dp"
+        android:textSize="8pt"
+        android:layout_below="@+id/servo_title_et"
+        android:layout_alignLeft="@+id/servo_title_et"
+        android:layout_alignStart="@+id/servo_title_et" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Название:"
+        android:id="@+id/textView"
+        android:layout_alignBottom="@+id/servo_title_et"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textSize="8pt"
+        android:layout_alignTop="@+id/servo_title_et"
+        android:gravity="center_vertical" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Команда (вкл)"
+        android:id="@+id/textView2"
+        android:textSize="8pt"
+        android:layout_alignBottom="@+id/led_command_on_et"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView"
+        android:layout_alignTop="@+id/led_command_on_et"
+        android:gravity="center_vertical" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/led_color_spinner"
+        android:entries="@array/led_colors"
+        android:layout_below="@+id/led_command_off_et"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/led_command_off_et"
+        android:layout_alignStart="@+id/led_command_off_et"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Цвет:"
+        android:id="@+id/textView3"
+        android:textSize="8pt"
+        android:layout_alignBottom="@+id/led_color_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/led_color_spinner"
+        android:gravity="center_vertical" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/led_state_switch"
+        android:layout_below="@+id/led_color_spinner"
+        android:layout_alignLeft="@+id/led_color_spinner"
+        android:layout_alignStart="@+id/led_color_spinner"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Состояние:"
+        android:id="@+id/textView4"
+        android:textSize="8pt"
+        android:layout_alignBottom="@+id/led_state_switch"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/led_state_switch"
+        android:gravity="center_vertical" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/led_command_off_et"
+        android:textSize="8pt"
+        android:layout_below="@+id/led_command_on_et"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/led_command_on_et"
+        android:layout_alignStart="@+id/led_command_on_et"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Команда (выкл)"
+        android:id="@+id/textView7"
+        android:textSize="8pt"
+        android:gravity="center_vertical"
+        android:layout_above="@+id/textView3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/led_command_off_et" />
+</RelativeLayout>

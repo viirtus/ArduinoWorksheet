@@ -1,0 +1,171 @@
+package ru.gubkin.lk.arduinoworksheet.component.servo;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+
+/**
+ * Created by Андрей on 07.05.2015.
+ */
+public class RadialScaleView extends View {
+    private final static String TAG = "SERVO_VIEW";
+
+    private String name = "Сервопривод";
+    private int circleColor = 0xff27A0D9;
+    private int arrowColor = 0xff92CEEB;
+    private int valueColor = 0xff27A0D9;
+    private int nameColor = 0xff27A0D9;
+    private Paint arrowPaint;
+    private Paint markerPaint;
+    private Paint textPaint;
+    private Paint valueTextPaint;
+    private Paint nameTextPaint;
+    private Paint circlePaint;
+    private Paint whitePaint;
+    private RectF oval;
+    private float bearing = 90;
+    private float maxValue = 180;
+    private int textHeight;
+    private int circleStrokeWidth = 5;
+    private int arrowStrokeWidth = 4;
+    private float value = 55;
+//    private int arrowHeight = 4;
+
+    public RadialScaleView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+    }
+
+    private void init() {
+        arrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        arrowPaint.setStrokeWidth(arrowStrokeWidth);
+        arrowPaint.setColor(arrowColor);
+
+        circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        circlePaint.setColor(circleColor);
+        circlePaint.setStrokeWidth(circleStrokeWidth);
+        circlePaint.setStyle(Paint.Style.STROKE);
+
+
+        textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setColor(circleColor);
+        textPaint.setStrokeWidth(circleStrokeWidth);
+        textPaint.setTextSize(20);
+
+        valueTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        valueTextPaint.setColor(valueColor);
+        valueTextPaint.setTextSize(60);
+
+        nameTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        nameTextPaint.setColor(nameColor);
+        nameTextPaint.setStrokeWidth(circleStrokeWidth);
+        nameTextPaint.setTextSize(60);
+
+        markerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        markerPaint.setColor(circleColor);
+        markerPaint.setStrokeWidth(circleStrokeWidth);
+
+
+        whitePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        whitePaint.setStrokeWidth(circleStrokeWidth + 1);
+        whitePaint.setColor(Color.WHITE);
+
+        textHeight = (int) textPaint.measureText("yY");
+        oval = new RectF();
+
+    }
+
+    public void setValue(float value) {
+        this.value = value;
+    }
+
+    public void setMaxValue(float maxValue) {
+        this.maxValue = maxValue;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        int px = getMeasuredWidth() / 2;
+        int py = getMeasuredHeight() - 100;
+
+        double xLen = getMeasuredWidth() - circleStrokeWidth * 2;
+        double yLen = 0;
+
+        float radius = (float) (Math.sqrt(xLen * xLen + yLen * yLen) / 2);
+
+        oval.set(px - radius,
+                py - radius, px + radius,
+                py + radius);
+        canvas.drawArc(oval, 180, 180, true, circlePaint);
+
+        canvas.drawLine(circleStrokeWidth, py, px * 2 - circleStrokeWidth, py, whitePaint);
+
+
+        canvas.save();
+        canvas.rotate(-bearing, px, py);
+
+        // Рисуйте отметки каждые 15 и текст каждые 45.
+        for (int i = 0; i < 13; i++) {
+            // Нарисуйте метку.
+            canvas.drawLine(px, py - radius, px, py - radius + 10, markerPaint);
+            canvas.save();
+            canvas.translate(0, textHeight);
+            // Нарисуйте основные точки
+            if (i % 2 == 0) {
+                // Отображайте текст каждые 45
+                String angle = String.valueOf(i * (maxValue / 12));
+                float angleTextWidth = textPaint.measureText(angle);
+                int angleTextX = (int) (px - angleTextWidth / 2);
+                int angleTextY = (int) (py - radius + textHeight);
+                canvas.drawText(angle, angleTextX, angleTextY, textPaint);
+            }
+            canvas.restore();
+            canvas.rotate(15, px, py);
+        }
+        canvas.restore();
+
+
+//        canvas.restore();
+
+        String value_ = String.valueOf(value);
+        float valueTextWidth = valueTextPaint.measureText(value_);
+        int valueTextX = (int) (px  - valueTextWidth / 2 );
+        int valueTextY = (py - 100);
+        canvas.drawText(value_, valueTextX, valueTextY, valueTextPaint);
+
+        float nameTextWidth = nameTextPaint.measureText(name);
+        int nameTextX = (int) (px - nameTextWidth / 2);
+        int nameTextY = (int) (py + 50);
+        canvas.drawText(name, nameTextX, nameTextY, nameTextPaint);
+
+        canvas.drawCircle(px, py, 10, arrowPaint);
+
+        float arrowAngle = (float) Math.toRadians(180 * (value / maxValue));
+
+        float arrowHeight = radius - 15;
+
+        float arrowStartY = (float) (Math.sin(arrowAngle) * arrowHeight);
+        float arrowStartX = (float) (Math.cos(arrowAngle) * arrowHeight);
+
+        canvas.drawLine(px - arrowStartX, py - arrowStartY, px, py, arrowPaint);
+    }
+
+
+}
