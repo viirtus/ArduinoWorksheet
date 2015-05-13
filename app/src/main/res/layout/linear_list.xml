@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
     android:visibility="gone"
-    android:id="@+id/servo_lv"
+    android:id="@+id/wrapper_lv"
     >
 
 </LinearLayout>

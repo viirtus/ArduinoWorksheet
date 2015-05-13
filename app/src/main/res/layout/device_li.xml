@@ -9,7 +9,8 @@
         android:text="New Text"
         android:id="@+id/device_name_tv"
         android:layout_margin="5dp"
-        android:textSize="10pt" />
+        android:textSize="10pt"
+        android:textColor="#212121" />
 
     <TextView
         android:layout_width="wrap_content"

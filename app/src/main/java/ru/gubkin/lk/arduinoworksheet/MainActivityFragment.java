@@ -17,6 +17,7 @@ import ru.gubkin.lk.arduinoworksheet.component.GroupHeader;
 import ru.gubkin.lk.arduinoworksheet.component.GroupItem;
 import ru.gubkin.lk.arduinoworksheet.component.ListItem;
 import ru.gubkin.lk.arduinoworksheet.component.led.LEDController;
+import ru.gubkin.lk.arduinoworksheet.component.sensor.SensorController;
 import ru.gubkin.lk.arduinoworksheet.component.servo.ServoController;
 import ru.gubkin.lk.arduinoworksheet.listener.GroupHeaderListener;
 
@@ -27,7 +28,6 @@ import ru.gubkin.lk.arduinoworksheet.listener.GroupHeaderListener;
 public class MainActivityFragment extends Fragment {
     private Context context;
     private BluetoothHandler handler;
-    private boolean debug = true;
     private ArrayList<Controller> controllers;
     public MainActivityFragment() {
         handler = MainActivity.getBluetoothHandler();
@@ -42,16 +42,22 @@ public class MainActivityFragment extends Fragment {
         ListView groupList = (ListView) v.findViewById(R.id.group_list);
         ArrayList<ListItem> items = new ArrayList<>();
         LEDController ledController = new LEDController(context, handler);
-        GroupHeader ledHeader = new GroupHeader("Светодиоды", ledController);
+        GroupHeader ledHeader = new GroupHeader("Бинарные устройства", ledController);
         items.add(ledHeader);
         items.add(new GroupItem(ledController));
 
         ServoController servoController = new ServoController(context, handler);
-        GroupHeader servoHeader = new GroupHeader("Сервоприводы", servoController);
+        GroupHeader servoHeader = new GroupHeader("Аналоговые устройства", servoController);
 
         items.add(servoHeader);
-
         items.add(new GroupItem(servoController));
+
+        SensorController sensorController = new SensorController(context, handler);
+        GroupHeader sensorHeader = new GroupHeader("Сенсоры", sensorController);
+
+        items.add(sensorHeader);
+        items.add(new GroupItem(sensorController));
+
         groupList.setWillNotDraw(false);
 
         GroupAdapter adapter = new GroupAdapter(context, items);
@@ -70,13 +76,5 @@ public class MainActivityFragment extends Fragment {
 //        for (Controller controller: controllers) {
 //            controller.registerListeners();
 //        }
-        if (!debug) {
-            try {
-                handler.tryToConnect(((MainActivity) context).getConnectedDevice().getAddress());
-            } catch (Exception e) {
-                e.printStackTrace();
-                ((MainActivity) context).connectFallback();
-            }
-        }
     }
 }

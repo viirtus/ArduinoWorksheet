@@ -12,9 +12,11 @@ import android.os.Message;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import ru.gubkin.lk.arduinoworksheet.MainActivity;
+import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
 
 /**
  * Created by root on 06.05.15.
@@ -22,47 +24,32 @@ import ru.gubkin.lk.arduinoworksheet.MainActivity;
 public class BluetoothHandler extends Handler {
     private static final UUID _UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final static String TAG = "BT_HANDLER";
+    private final static int REQUEST_ENABLE_BT = 0;
     private Context context;
     private BluetoothAdapter adapter;
     private BluetoothDevice device;
     private BluetoothSocket socket;
     private BluetoothThread thread;
+    private BluetoothConnectionThread threadConnection;
     private String lastConnect;
+
+
     public BluetoothHandler(Context context) {
         super(Looper.getMainLooper());
         this.context = context;
         adapter = BluetoothAdapter.getDefaultAdapter();
     }
 
-    public boolean tryToConnect(String mac) throws IOException {
+    public void tryToConnect(String mac) throws IOException {
         if (checkBtState()) {
             device = adapter.getRemoteDevice(mac);
-            socket = device.createRfcommSocketToServiceRecord(_UUID);
-
             adapter.cancelDiscovery();
-            try {
-                socket.connect();
-            } catch (Exception e) {
-                e.printStackTrace();
-                try {
-                    Log.e(TAG, "trying fallback...");
 
-                    socket = (BluetoothSocket) device.getClass().getMethod("createRfcommSocket", new Class[]{int.class}).invoke(device, 1);
-                    socket.connect();
-
-                    Log.e(TAG, "Connected");
-                } catch (Exception e2) {
-                    socket.close();
-                    Log.e(TAG, "Couldn't establish Bluetooth connection!");
-                    return false;
-                }
-            }
-            thread = new BluetoothThread(socket, this);
-            thread.start();
+            threadConnection = new BluetoothConnectionThread(this, device);
+            threadConnection.start();
             lastConnect = mac;
-            return true;
         }
-        return false;
+
     }
 
     private boolean checkBtState() {
@@ -80,19 +67,37 @@ public class BluetoothHandler extends Handler {
         return false;
     }
 
-    public static void startDiscovery() {
+    public static void startDiscovery(MainActivity activity) {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter != null) {
             adapter.startDiscovery();
+            if (!adapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
         }
     }
 
     @Override
     public void handleMessage(Message msg) {
-        String read = (String) msg.obj;
-        Log.i(TAG, "Данные от Arduino: " + read);
+        if (msg.obj != null) {
+            BluetoothSocket socket = (BluetoothSocket) msg.obj;
+            try {
+
+                thread = new BluetoothThread(socket);
+                thread.start();
+                this.socket = socket;
+                ((MainActivity) context).startMainFragment();
+                threadConnection.interrupt();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     };
 
+    public void registerMessageHandler(MessageHandler handler) {
+        thread.setHandler(handler);
+    }
 
     public void sendData(String message) throws IOException {
         if (thread != null) {

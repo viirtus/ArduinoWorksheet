@@ -103,7 +103,7 @@ public class Servo extends Observable {
 
         this.value = value;
         setChanged();
-//        notifyObservers(CONTROL_KEY);
+        notifyObservers(CONTROL_KEY);
     }
 
     public void setName(String name) {

@@ -1,8 +1,14 @@
 package ru.gubkin.lk.arduinoworksheet;
 
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +31,33 @@ public class MainActivity extends ActionBarActivity {
     private FrameLayout mainFrame;
     private BluetoothDevice connectedDevice;
     static private BluetoothHandler handler;
+    private ProgressDialog progressDialog;
+    private boolean debug = false;
+    private MainActivityFragment componentsFragment;
 
+    private int location;
+    //The BroadcastReceiver that listens for bluetooth broadcasts
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                connectedDevice = device;
+            }
+            if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
+                connectedDevice = null;
+                checkDeviceState();
+                showDevicesList();
+            }
+            else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                connectedDevice = null;
+                checkDeviceState();
+                showDevicesList();
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,20 +65,38 @@ public class MainActivity extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         mainFrame = (FrameLayout) findViewById(R.id.content_frame);
         setSupportActionBar(toolbar);
-
+        progressDialog = new ProgressDialog(this);
         handler = new BluetoothHandler(this);
-//        showDevicesList();
-        attachFragmentForDevice(null);
+        showDevicesList();
+//        tryToConnect(null);
         context = this;
+
+        IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+        IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        this.registerReceiver(mReceiver, filter1);
+        this.registerReceiver(mReceiver, filter2);
+        this.registerReceiver(mReceiver, filter3);
     }
 
-    public void attachFragmentForDevice(BluetoothDevice device) {
-        connectedDevice = device;
-        MainActivityFragment componentsFragment = new MainActivityFragment();
-//
+    public void tryToConnect(BluetoothDevice device) {
+        showProgressDialog();
+        try {
+            handler.tryToConnect(device.getAddress());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startMainFragment() {
+        hideProgressDialog();
+        toolbar.setTitle(connectedDevice.getName());
+        storeDevice();
+        componentsFragment = new MainActivityFragment();
+
         FragmentManager fragmentManager = getFragmentManager();
 
-        fragmentManager.beginTransaction().add(R.id.content_frame, componentsFragment).addToBackStack(null).commit();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, componentsFragment).commit();
     }
 
     public void connectFallback() {
@@ -53,27 +104,33 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void showDevicesList(){
+
+        toolbar.setTitle("Доступные устройства");
+
         SearchDevicesFragment searchFragment = new SearchDevicesFragment();
 
         FragmentManager fragmentManager = getFragmentManager();
 
-        fragmentManager.beginTransaction().add(R.id.content_frame, searchFragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, searchFragment).addToBackStack(null).commit();
+    }
+
+    public void storeDevice() {
+        String deviceKey = "DEVICE";
+        getPreferences(MODE_PRIVATE).edit().putString(deviceKey, connectedDevice.getAddress()).commit();
+    }
+
+    public void checkDeviceState() {
+        String deviceKey = "DEVICE";
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        String alreadyConnectedId = preferences.getString(deviceKey, "");
+        if (alreadyConnectedId.isEmpty()) {
+//            deleteDatabase("arduino_inner_db");
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        String regexString =  ".*temp:(.*?)";
-        Pattern placeHolderPattern = Pattern.compile(regexString);
-        Matcher matcher = placeHolderPattern.matcher("temp: 22 C");
-        while(matcher.find()) {
-           Log.i("PATTERN", "MATCHED start: " + matcher.start());
-           Log.i("PATTERN", "MATCHED end: " + matcher.end());
-            int end = matcher.end();
-            String endLine = "temp: 22 C".substring(end);
-           Log.i("PATTERN", "MATCHED" + endLine);
-        }
     }
 
     @Override
@@ -101,6 +158,18 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void showProgressDialog () {
+        progressDialog.setMessage("Подключение...");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        progressDialog.dismiss();
+    }
+
     public BluetoothDevice getConnectedDevice() {
         return connectedDevice;
     }

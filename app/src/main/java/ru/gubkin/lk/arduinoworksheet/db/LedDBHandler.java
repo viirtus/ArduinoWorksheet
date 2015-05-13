@@ -14,9 +14,9 @@ import ru.gubkin.lk.arduinoworksheet.component.led.LED;
  */
 public class LedDBHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 1;
 
-    private static final String DATABASE_NAME = "arduino_inner_db";
+    private static final String DATABASE_NAME = "arduino_inner_db_";
 
     private static final String TABLE_LED = "led_list";
 

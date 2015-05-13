@@ -14,16 +14,15 @@ import java.io.OutputStream;
 public class BluetoothThread extends Thread {
     private final static String TAG = "BT_THREAD";
     private final static String END_OF_LINE = "\n";
-    private final BluetoothSocket bluetoothSocket;
     private final OutputStream outputStream;
     private final InputStream inputStream;
-    private final Handler handler;
 
-    protected BluetoothThread(BluetoothSocket copyBtSocket, Handler handler) throws IOException {
-        this.bluetoothSocket = copyBtSocket;
+    private  Handler handler;
+
+
+    protected BluetoothThread(BluetoothSocket copyBtSocket) throws IOException {
         outputStream = copyBtSocket.getOutputStream();
         inputStream = copyBtSocket.getInputStream();
-        this.handler = handler;
     }
 
     protected void sendData(String message) throws IOException {
@@ -32,11 +31,11 @@ public class BluetoothThread extends Thread {
         Log.d(TAG, "***Отправляем данные: " + message + "***");
 
         outputStream.write(msgBuffer);
+        outputStream.flush();
     }
 
     @Override
     public void run() {
-
 
         final byte delimiter = 10; //This is the ASCII code for a newline character
         int readBufferPosition = 0;
@@ -55,7 +54,9 @@ public class BluetoothThread extends Thread {
                             System.arraycopy(buffer, 0, encodedBytes, 0, encodedBytes.length);
                             final String data = new String(encodedBytes, "US-ASCII");
                             readBufferPosition = 0;
-                            handler.obtainMessage(0, data).sendToTarget();
+                            if (handler != null) {
+                                handler.obtainMessage(0, data).sendToTarget();
+                            }
                         } else {
                             buffer[readBufferPosition++] = b;
                         }
@@ -77,5 +78,9 @@ public class BluetoothThread extends Thread {
 
         }
 
+    }
+
+    public void setHandler(Handler handler) {
+        this.handler = handler;
     }
 }

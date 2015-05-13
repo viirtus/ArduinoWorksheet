@@ -1,7 +1,6 @@
 package ru.gubkin.lk.arduinoworksheet;
 
 import android.app.Fragment;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -57,7 +55,7 @@ public class SearchDevicesFragment extends Fragment {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((MainActivity) getActivity()).attachFragmentForDevice((BluetoothDevice)btDeviceAdapter.getItem(position));
+                ((MainActivity) getActivity()).tryToConnect((BluetoothDevice) btDeviceAdapter.getItem(position));
 //                getFragmentManager().beginTransaction().remove(me).commit();
             }
         });
@@ -67,7 +65,8 @@ public class SearchDevicesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        BluetoothHandler.startDiscovery();
+
+        BluetoothHandler.startDiscovery((MainActivity) getActivity());
     }
     @Override
     public void onDestroy(){

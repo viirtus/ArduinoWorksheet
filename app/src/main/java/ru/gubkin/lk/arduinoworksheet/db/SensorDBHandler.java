@@ -6,39 +6,38 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import ru.gubkin.lk.arduinoworksheet.component.led.LED;
-import ru.gubkin.lk.arduinoworksheet.component.servo.Servo;
+import ru.gubkin.lk.arduinoworksheet.component.sensor.Sensor;
 
 /**
- * Created by Андрей on 09.05.2015.
+ * Created by root on 11.05.15.
  */
-public class ServoDBHandler extends SQLiteOpenHelper {
+public class SensorDBHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "arduino_inner_db_";
 
-    private static final String TABLE_SERVO = "linear_list";
+    private static final String TABLE_SENSOR = "sensor_list";
 
     // Leds Table Columns names
     private static final String KEY_ID = "id";
     private static final String KEY_TITLE = "title";
-//    private static final String KEY_COLOR = "color";
-    private static final String KEY_STATE = "state";
+    //    private static final String KEY_COLOR = "color";
     private static final String KEY_MAX_VALUE = "max_value";
+    private static final String KEY_MIN_VALUE = "min_value";
     private static final String KEY_DEVICE_ID = "device_id";
-    private static final String KEY_DELAY = "delay";
-    private static final String KEY_DATA_KEY = "data_key";
+    private static final String KEY_START_PATTERN = "start_pattern";
+    private static final String KEY_END_PATTERN = "end_pattern";
 
     private static final String CREATE_STATEMENT =
-            "CREATE TABLE " + TABLE_SERVO + "("
+            "CREATE TABLE " + TABLE_SENSOR + "("
                     + KEY_ID + " INTEGER PRIMARY KEY,"
                     + KEY_TITLE + " TEXT,"
-                    + KEY_STATE + " INTEGER,"
                     + KEY_MAX_VALUE + " INTEGER,"
-                    + KEY_DELAY + " INTEGER,"
-                    + KEY_DATA_KEY + " TEXT" + ")";
+                    + KEY_MIN_VALUE + " INTEGER,"
+                    + KEY_START_PATTERN + " TEXT,"
+                    + KEY_END_PATTERN + " TEXT" + ")";
 
-    public ServoDBHandler(Context context) {
+    public SensorDBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -49,42 +48,46 @@ public class ServoDBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SERVO);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SENSOR);
         onCreate(db);
     }
 
-    public void insertNew(Servo s) {
+    public void insertNew(Sensor s) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_TITLE, s.getName());
-        values.put(KEY_STATE, s.getValue());
         values.put(KEY_MAX_VALUE, s.getMaxValue());
-        values.put(KEY_DATA_KEY, s.getCommand());
-        values.put(KEY_DELAY, s.getDelay());
-        long id = db.insert(TABLE_SERVO, null, values);
+        values.put(KEY_MIN_VALUE, s.getMinValue());
+        values.put(KEY_START_PATTERN, s.getStartPattern());
+        values.put(KEY_END_PATTERN, s.getEndPattern());
+        long id = db.insert(TABLE_SENSOR, null, values);
         s.setId((int) id);
     }
 
-    public void updateServo(Servo s) {
+    public void updateSensor (Sensor s) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_TITLE, s.getName());
-        values.put(KEY_STATE, s.getValue());
         values.put(KEY_MAX_VALUE, s.getMaxValue());
-        values.put(KEY_DATA_KEY, s.getCommand());
-        values.put(KEY_DELAY, s.getDelay());
-        db.update(TABLE_SERVO, values, KEY_ID + " = " + s.getId(), null);
+        values.put(KEY_MIN_VALUE, s.getMinValue());
+        values.put(KEY_START_PATTERN, s.getStartPattern());
+        values.put(KEY_END_PATTERN, s.getEndPattern());
+        db.update(TABLE_SENSOR, values, KEY_ID + " = " + s.getId(), null);
     }
-    public void deleteServo (Servo s) {
+    public void deleteSensor (Sensor s) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_SERVO, KEY_ID + " = " + s.getId(), null);
+        db.delete(TABLE_SENSOR, KEY_ID + " = " + s.getId(), null);
     }
     public Cursor getAllSavedLed () {
-
         SQLiteDatabase db = getReadableDatabase();
-        String query = "select " + KEY_ID + ", " + KEY_TITLE + ", " +
-                KEY_DELAY + ", " + KEY_STATE + ", " + KEY_MAX_VALUE + ", " + KEY_DATA_KEY + " from " +
-                TABLE_SERVO;
+        String query = "select " +
+                KEY_ID + ", " +
+                KEY_TITLE + ", " +
+                KEY_MAX_VALUE + ", " +
+                KEY_MIN_VALUE + ", " +
+                KEY_START_PATTERN + ", " +
+                KEY_END_PATTERN + " from " +
+                TABLE_SENSOR;
         try {
             return db.rawQuery(query, new String[]{});
         } catch (Exception e) {
@@ -100,19 +103,16 @@ public class ServoDBHandler extends SQLiteOpenHelper {
         return 1;
     }
 
-    public int getStateIndex() {
-        return 3;
-    }
-
     public int getMaxValueIndex() {
-        return 4;
-    }
-
-    public int getDelayIndex() {
         return 2;
     }
-
-    public int getDataKeyIndex() {
+    public int getMinValueIndex() {
+        return 3;
+    }
+    public int getStartPatternIndex() {
+        return 4;
+    }
+    public int getEndPatternIndex() {
         return 5;
     }
 

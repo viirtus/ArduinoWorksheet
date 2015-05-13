@@ -27,7 +27,9 @@ public class DevicesAdapter extends BaseAdapter {
     }
 
     public void add(BluetoothDevice device) {
-        items.add(device);
+        if (!items.contains(device)) {
+            items.add(device);
+        }
     }
 
     @Override
