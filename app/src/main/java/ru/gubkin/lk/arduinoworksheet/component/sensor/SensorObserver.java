@@ -22,6 +22,7 @@ public class SensorObserver implements Observer {
     public void update(Observable observable, Object data) {
         Sensor sensor = (Sensor) observable;
         Integer key = (Integer) data;
+
         if (key.equals (Sensor.UPDATE_KEY)) {
             dbHandler.updateSensor(sensor);
             controller.notifyChange();

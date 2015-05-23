@@ -39,7 +39,7 @@ public class RadialScaleView extends View {
     private float circleStrokeWidth = 5;
     private float arrowStrokeWidth = 4;
     private float lineHeight = 7;
-    private float bottomPadding = 40;
+    private float bottomPadding = 25;
     private float circleRadius = 7;
 //    private int arrowHeight = 4;
 

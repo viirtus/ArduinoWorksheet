@@ -18,14 +18,5 @@
         android:layout_marginLeft="10dp"
         android:textSize="10pt" />
 
-    <Button
-        android:layout_width="36dp"
-        android:visibility="gone"
-        android:layout_height="36dp"
-        android:paddingRight="7dp"
-        android:id="@+id/header_add_button"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/ic_add_circle_outline_white"
-        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>

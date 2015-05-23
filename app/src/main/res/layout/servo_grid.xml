@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
     android:layout_height="match_parent">
 
     <GridView
-        android:id="@+id/led_grid"
+        android:id="@+id/servo_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:horizontalSpacing="10dp"
-        android:numColumns="4"
+        android:numColumns="2"
         android:stretchMode="columnWidth"
         android:verticalSpacing="10dp"
         android:layout_below="@+id/linearLayout"
@@ -28,10 +24,10 @@
         android:id="@+id/linearLayout">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Бинарные устройства"
+            android:text="Аналоговые устройства"
             android:layout_weight="10"
             android:id="@+id/textView8"
             android:gravity="center_vertical" />
@@ -39,9 +35,10 @@
         <Button
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:id="@+id/led_add_button"
+            android:id="@+id/servo_add_button"
             android:background="@drawable/ic_add_circle_outline"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp" />
     </LinearLayout>
+
 </RelativeLayout>

@@ -68,7 +68,7 @@ public class Sensor extends Observable implements MessageListener {
                 }
                 sensorView.setValue(value);
                 sensorView.invalidate();
-            } catch (Exception e) {
+            } catch (NumberFormatException ignored) {
 
             }
         }

@@ -22,6 +22,5 @@ public class GroupHeaderListener implements AdapterView.OnItemClickListener {
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         GroupItem nextItem = (GroupItem) adapter.getItem(position + 1);
         Controller controller = nextItem.getController();
-        controller.toggleView();
     }
 }

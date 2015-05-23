@@ -3,4 +3,7 @@
     <declare-styleable name="RadialScaleView">
 
     </declare-styleable>
+    <declare-styleable name="SensorDisplayView">
+
+    </declare-styleable>
 </resources>

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import ru.gubkin.lk.arduinoworksheet.adapter.GroupAdapter;
 import ru.gubkin.lk.arduinoworksheet.bt.BluetoothHandler;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
-import ru.gubkin.lk.arduinoworksheet.component.GroupHeader;
 import ru.gubkin.lk.arduinoworksheet.component.GroupItem;
 import ru.gubkin.lk.arduinoworksheet.component.ListItem;
 import ru.gubkin.lk.arduinoworksheet.component.led.LEDController;
@@ -42,21 +41,16 @@ public class MainActivityFragment extends Fragment {
         ListView groupList = (ListView) v.findViewById(R.id.group_list);
         ArrayList<ListItem> items = new ArrayList<>();
         LEDController ledController = new LEDController(context, handler);
-        GroupHeader ledHeader = new GroupHeader("Бинарные устройства", ledController);
-        items.add(ledHeader);
+
         items.add(new GroupItem(ledController));
 
         ServoController servoController = new ServoController(context, handler);
-        GroupHeader servoHeader = new GroupHeader("Аналоговые устройства", servoController);
 
-        items.add(servoHeader);
         items.add(new GroupItem(servoController));
 
-        SensorController sensorController = new SensorController(context, handler);
-        GroupHeader sensorHeader = new GroupHeader("Сенсоры", sensorController);
-
-        items.add(sensorHeader);
-        items.add(new GroupItem(sensorController));
+//        SensorController sensorController = new SensorController(context, handler);
+//
+//        items.add(new GroupItem(sensorController));
 
         groupList.setWillNotDraw(false);
 

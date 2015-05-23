@@ -26,13 +26,13 @@ import ru.gubkin.lk.arduinoworksheet.bt.BluetoothHandler;
 
 public class MainActivity extends ActionBarActivity {
     private static final String BUNDLE_NT_HANDLER = "bt_handler";
+    public static boolean debug = true;
     private Context context;
     private Toolbar toolbar;
     private FrameLayout mainFrame;
     private BluetoothDevice connectedDevice;
     static private BluetoothHandler handler;
     private ProgressDialog progressDialog;
-    private boolean debug = false;
     private MainActivityFragment componentsFragment;
 
     private int location;
@@ -67,8 +67,11 @@ public class MainActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         progressDialog = new ProgressDialog(this);
         handler = new BluetoothHandler(this);
-        showDevicesList();
-//        tryToConnect(null);
+        if (debug) {
+            startMainFragment();
+        } else {
+            showDevicesList();
+        }
         context = this;
 
         IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
@@ -80,18 +83,22 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void tryToConnect(BluetoothDevice device) {
-        showProgressDialog();
-        try {
-            handler.tryToConnect(device.getAddress());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!debug) {
+            showProgressDialog();
+            try {
+                handler.tryToConnect(device.getAddress());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void startMainFragment() {
         hideProgressDialog();
-        toolbar.setTitle(connectedDevice.getName());
-        storeDevice();
+        if (!debug) {
+            toolbar.setTitle(connectedDevice.getName());
+            storeDevice();
+        }
         componentsFragment = new MainActivityFragment();
 
         FragmentManager fragmentManager = getFragmentManager();

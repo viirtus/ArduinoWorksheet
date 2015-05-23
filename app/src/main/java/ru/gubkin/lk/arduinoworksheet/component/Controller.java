@@ -24,23 +24,11 @@ public abstract class Controller {
 
     public abstract void registerListeners();
     public abstract View getViewItem(LayoutInflater inflater, View convertView, ViewGroup parent);
-    public abstract void expandView();
-    public abstract void collapsedView();
-    public abstract void registerAddButton(Button button);
 
+    public abstract void notifyChange();
     public int getFrameHeight() {
         return Util.getActivityHeight((MainActivity) context) - (int) Util.convertDpToPixel(50, context);
     }
-    protected void expandWrapper() {
 
-    }
 
-    public void toggleView() {
-        if (expanded) {
-            this.collapsedView();
-        } else {
-            this.expandView();
-        }
-        expanded = !expanded;
-    }
 }

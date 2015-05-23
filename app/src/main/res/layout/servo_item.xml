@@ -1,45 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="gone"
+    android:layout_weight="1"
     >
 
     <ru.gubkin.lk.arduinoworksheet.component.servo.RadialScaleView
-        android:layout_height="180dp"
-        android:layout_width="300dp"
+        android:layout_height="120dp"
+        android:layout_width="match_parent"
         android:background="#ffffff"
         android:id="@+id/servo_one"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginLeft="70dp"
-        android:layout_marginRight="70dp" />
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentEnd="false" />
 
     <ImageButton
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
         android:id="@+id/servo_dwn_btn"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:scaleType="fitCenter"
         android:padding="20dp"
 
-        android:layout_alignBottom="@+id/servo_one"
-        android:background="@drawable/servo_control_button_remove" />
+        android:background="@drawable/servo_control_button_remove"
+        android:layout_below="@+id/servo_one"
+        android:layout_alignLeft="@+id/servo_one"
+        android:layout_alignStart="@+id/servo_one" />
 
     <ImageButton
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
         android:id="@+id/servo_up_btn"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/servo_one"
-        android:background="@drawable/servo_control_button_add" />
+        android:background="@drawable/servo_control_button_add"
+        android:layout_below="@+id/servo_one"
+        android:layout_alignRight="@+id/servo_one"
+        android:layout_alignEnd="@+id/servo_one" />
 
 </RelativeLayout>
