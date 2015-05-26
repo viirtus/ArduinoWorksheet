@@ -48,9 +48,8 @@ public class MainActivityFragment extends Fragment {
 
         items.add(new GroupItem(servoController));
 
-//        SensorController sensorController = new SensorController(context, handler);
-//
-//        items.add(new GroupItem(sensorController));
+        SensorController sensorController = new SensorController(context, handler);
+        items.add(new GroupItem(sensorController));
 
         groupList.setWillNotDraw(false);
 

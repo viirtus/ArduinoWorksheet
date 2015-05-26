@@ -4,6 +4,7 @@ import java.util.Observable;
 
 import ru.gubkin.lk.arduinoworksheet.component.servo.RadialScaleView;
 import ru.gubkin.lk.arduinoworksheet.util.MessageListener;
+import ru.gubkin.lk.arduinoworksheet.util.Util;
 
 /**
  * Created by root on 11.05.15.
@@ -19,7 +20,8 @@ public class Sensor extends Observable implements MessageListener {
     private float maxValue;
     private float minValue;
     private float value;
-    private RadialScaleView sensorView;
+    private SensorDisplayView sensorView;
+    private RadialScaleView sensorRadialView;
 
     public Sensor(String name, String startPattern, String endPattern, int id, float maxValue, float minValue){
         this.name = name;
@@ -66,8 +68,18 @@ public class Sensor extends Observable implements MessageListener {
                 if (value > maxValue) {
                     value = maxValue;
                 }
+                if (value < minValue) {
+                    value = minValue;
+                }
+
                 sensorView.setValue(value);
                 sensorView.invalidate();
+
+                if (sensorRadialView != null) {
+                    sensorRadialView.setValue(value);
+                    sensorRadialView.invalidate();
+                }
+
             } catch (NumberFormatException ignored) {
 
             }
@@ -114,12 +126,23 @@ public class Sensor extends Observable implements MessageListener {
         this.value = value;
     }
 
-    public void setSensorView(RadialScaleView sensorView) {
+    public void setSensorView(SensorDisplayView sensorView) {
         this.sensorView = sensorView;
-        sensorView.setName(name);
         sensorView.setMaxValue(maxValue);
+        sensorView.setMinValue(minValue);
         sensorView.setValue(value);
         sensorView.invalidate();
+    }
+
+    public void setSensorRadialView(RadialScaleView sensorRadialView) {
+        this.sensorRadialView = sensorRadialView;
+        int color = Util.valueToColor(value, minValue, maxValue);
+        sensorRadialView.setMaxValue(maxValue);
+        sensorRadialView.setMinValue(minValue);
+        sensorRadialView.setValue(value);
+        sensorRadialView.setName(name);
+        sensorRadialView.setArrowColor(color);
+        sensorRadialView.invalidate();
     }
 
     public void destroy() {

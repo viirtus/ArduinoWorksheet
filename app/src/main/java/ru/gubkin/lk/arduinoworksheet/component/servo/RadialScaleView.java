@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.Locale;
+
 import ru.gubkin.lk.arduinoworksheet.util.Util;
 
 /**
@@ -23,6 +25,7 @@ public class RadialScaleView extends View {
     private int arrowColor = 0xff92CEEB;
     private int valueColor = 0xff27A0D9;
     private int nameColor = 0xff27A0D9;
+
     private Paint arrowPaint;
     private Paint markerPaint;
     private Paint textPaint;
@@ -32,8 +35,11 @@ public class RadialScaleView extends View {
     private Paint whitePaint;
     private RectF oval;
     private float bearing = 90;
+
     private float maxValue = 180;
-    private float value = 55;
+    private float minValue = 100;
+
+    private float value = 120;
     private int textHeight;
     private int nameTextHeight;
     private float circleStrokeWidth = 5;
@@ -130,7 +136,8 @@ public class RadialScaleView extends View {
 
         canvas.save();
         canvas.rotate(-bearing, px, py);
-
+        float valueIterator = minValue;
+        float step = (maxValue - minValue) / 12;
         // Рисуйте отметки каждые 15 и текст каждые 45.
         for (int i = 0; i < 13; i++) {
             // Нарисуйте метку.
@@ -139,18 +146,18 @@ public class RadialScaleView extends View {
             canvas.translate(0, textHeight);
             // Нарисуйте основные точки
             if (i % 2 == 0) {
-                // Отображайте текст каждые 45
-                String angle = String.valueOf(i * (maxValue / 12));
+                String angle = String.format(Locale.ENGLISH, "%-5.1f",  valueIterator);
                 float angleTextWidth = textPaint.measureText(angle);
                 int angleTextX = (int) (px - angleTextWidth / 2);
                 int angleTextY = (int) (py - radius + textHeight);
                 canvas.drawText(angle, angleTextX, angleTextY, textPaint);
             }
+            valueIterator += step;
             canvas.restore();
             canvas.rotate(15, px, py);
         }
-        canvas.restore();
 
+        canvas.restore();
 
 //        canvas.restore();
 
@@ -167,7 +174,21 @@ public class RadialScaleView extends View {
 
         canvas.drawCircle(px, py, circleRadius, arrowPaint);
 
-        float arrowAngle = (float) Math.toRadians(180 * (value / maxValue));
+        float normal = Math.abs(minValue);
+
+        float normalMax;
+        float normalValue;
+
+        if (minValue > 0) {
+            normalMax = maxValue - normal;
+            normalValue = value - normal;
+        } else {
+            normalMax = maxValue + normal;
+            normalValue = value + normal;
+        }
+
+
+        float arrowAngle = (float) Math.toRadians(180 * (normalValue / normalMax));
 
         float arrowHeight = radius - lineHeight - 5;
 
@@ -177,5 +198,12 @@ public class RadialScaleView extends View {
         canvas.drawLine(px - arrowStartX, py - arrowStartY, px, py, arrowPaint);
     }
 
+    public void setArrowColor(int arrowColor) {
+        this.arrowColor = arrowColor;
+        arrowPaint.setColor(arrowColor);
+    }
 
+    public void setMinValue(float minValue) {
+        this.minValue = minValue;
+    }
 }

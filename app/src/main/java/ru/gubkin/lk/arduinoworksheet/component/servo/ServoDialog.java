@@ -4,10 +4,16 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.EditText;
 
+import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.R;
 
 /**
@@ -25,10 +31,11 @@ public class ServoDialog  extends Dialog {
     private EditText delayEt;
 
     public ServoDialog(Context context, Servo servo) {
+
         super(context);
         this.context = context;
         this.servo = servo;
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.DialogSlideAnim));
         builder.setTitle(TITLE);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.servo_dialog, null);
@@ -102,6 +109,8 @@ public class ServoDialog  extends Dialog {
 
     @Override
     public void show() {
+//        dialog.getWindow().setWindowAnimations(R.anim.slide_out_dialog);
+//        dialog.getWindow().getDecorView().startAnimation(in);
         dialog.show();
     }
 

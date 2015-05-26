@@ -1,21 +1,25 @@
 package ru.gubkin.lk.arduinoworksheet.component.sensor;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
 import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.R;
+import ru.gubkin.lk.arduinoworksheet.adapter.SensorGridAdapter;
 import ru.gubkin.lk.arduinoworksheet.bt.BluetoothHandler;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
-import ru.gubkin.lk.arduinoworksheet.component.servo.RadialScaleView;
 import ru.gubkin.lk.arduinoworksheet.db.SensorDBHandler;
 import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
+import ru.gubkin.lk.arduinoworksheet.util.Util;
 
 /**
  * Created by root on 11.05.15.
@@ -24,10 +28,13 @@ public class SensorController extends Controller {
     private final BluetoothHandler bluetoothHandler;
     private ArrayList<Sensor> items;
     private View wrapper;
+    private GridView gridView;
+    private Button addButton;
     private LayoutInflater inflater;
     private SensorDBHandler dbHandler;
     private SensorObserver observer;
     private MessageHandler messageHandler;
+    private SensorGridAdapter adapter;
     private Button button;
     private LinearLayout layout;
 
@@ -41,60 +48,53 @@ public class SensorController extends Controller {
         if (!MainActivity.debug)
         bluetoothHandler.registerMessageHandler(messageHandler);
 
-        items = SensorFactory.getSavedServo(dbHandler, messageHandler, observer);
+        items = SensorFactory.getSavedSensor(dbHandler, messageHandler, observer);
+
+        adapter = new SensorGridAdapter(context, items);
+
     }
 
     @Override
     public void registerListeners() {
-
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Sensor sensor = SensorFactory.getNew(dbHandler, messageHandler, observer);
+                items.add(sensor);
+                notifyChange();
+            }
+        });
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Dialog dialog = new SensorDetailDialog(context, items.get(position));
+                dialog.show();
+            }
+        });
     }
 
     @Override
     public View getViewItem(LayoutInflater inflater, View convertView, ViewGroup parent) {
         if (wrapper == null) {
             this.inflater = inflater;
-            wrapper = inflater.inflate(R.layout.linear_list, parent, false);
+            wrapper = inflater.inflate(R.layout.sensor_grid, parent, false);
+            addButton = (Button) wrapper.findViewById(R.id.sensor_add_button);
+            gridView = (GridView) wrapper.findViewById(R.id.sensor_grid);
+            gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(110, context));
+            gridView.setAdapter(adapter);
             registerListeners();
-            renderList();
         }
         return wrapper;
     }
 
-    private void renderList() {
-        layout = (LinearLayout) wrapper.findViewById(R.id.wrapper_lv);
-        layout.removeAllViews();
-        for(final Sensor sensor : items) {
-            View row = inflater.inflate(R.layout.sensor_item_radiate, layout, false);
-            RadialScaleView view = (RadialScaleView) row.findViewById(R.id.sensor_one);
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    SensorDialog dialog = new SensorDialog(context, sensor);
-                    dialog.show();
-                    return false;
-                }
-            });
-            sensor.setSensorView(view);
-            layout.addView(row);
-        }
-    }
-
     public void notifyChange() {
-        renderList();
+        adapter.notifyDataSetChanged();
+        gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(110, context));
     }
 
     public void deleteSensor(Sensor sensor) {
         items.remove(sensor);
     }
 
-    public void registerAddButton(Button button) {
-        this.button = button;
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                items.add(SensorFactory.getNew(dbHandler, messageHandler, observer));
-                notifyChange();
-            }
-        });
-    }
+
 }

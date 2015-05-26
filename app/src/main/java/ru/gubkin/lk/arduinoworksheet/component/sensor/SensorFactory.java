@@ -20,7 +20,7 @@ public class SensorFactory {
         return sensor;
     }
 
-    public static ArrayList<Sensor> getSavedServo(SensorDBHandler db, MessageHandler handler, SensorObserver observer) {
+    public static ArrayList<Sensor> getSavedSensor(SensorDBHandler db, MessageHandler handler, SensorObserver observer) {
         ArrayList<Sensor> list = new ArrayList<>();
         Cursor cursor = db.getAllSavedLed();
         cursor.moveToFirst();

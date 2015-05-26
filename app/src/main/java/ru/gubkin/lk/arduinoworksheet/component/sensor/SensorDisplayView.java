@@ -1,16 +1,15 @@
 package ru.gubkin.lk.arduinoworksheet.component.sensor;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
+import java.security.InvalidParameterException;
 import java.util.Locale;
 
 import ru.gubkin.lk.arduinoworksheet.util.Util;
@@ -22,9 +21,16 @@ public class SensorDisplayView extends View {
     private static final String TAG = "SENSOR_DISPLAY";
     private Paint borderPaint;
     private Paint valueFontPaint;
+    private Paint underValueFontPaint;
 
     private float borderWidth = 5;
     private int borderColor = 0xff666666;
+    private float maxValue = 1024f;
+    private float minValue = -1024f;
+    private float value = 1;
+
+    private int currentValueColor;
+
 
     public SensorDisplayView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -40,9 +46,16 @@ public class SensorDisplayView extends View {
         Typeface valueTf = Typeface.createFromAsset(getContext().getAssets(), "digital-7.ttf");
         valueFontPaint.setTypeface(valueTf);
 
+        underValueFontPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        underValueFontPaint.setTypeface(valueTf);
+        underValueFontPaint.setColor(0x11000000);
+
+
         borderWidth = Util.convertDpToPixel(borderWidth, context);
 
         borderPaint.setStrokeWidth(borderWidth);
+
+        currentValueColor = Util.valueToColor(value, minValue, maxValue);
     }
 
 
@@ -51,15 +64,16 @@ public class SensorDisplayView extends View {
         super.onDraw(canvas);
         int height = getHeight();
         int width = getWidth();
-
-        RectF r = new RectF(0, 0, width, height);
-        canvas.drawRoundRect(r, 20, 20, borderPaint);
-        float value = 1;
+        RectF round = new RectF(0, 0, width, height);
+        canvas.drawRoundRect(round, 50, 50, borderPaint);
 
         String valueFormat = formatNumber(value);
-        valueFontPaint.setColor(valueToColor(value));
+        valueFontPaint.setColor(currentValueColor);
 
-        canvas.drawText(valueFormat, 0, (float) (getHeight() / 1.5), valueFontPaint);
+        canvas.drawText(valueFormat, 0, (float) (height / 1.4), valueFontPaint);
+
+        canvas.drawText(" 0000", 0, (float) (height / 1.4), underValueFontPaint);
+        canvas.drawText("-----", 0, (float) (height / 1.4), underValueFontPaint);
     }
 
     private String formatNumber(float number) {
@@ -78,33 +92,11 @@ public class SensorDisplayView extends View {
         return format;
     }
 
-    private int valueToColor(float value) {
-        float maxValue = 1024;
-        float minValue = -200;
-        float middle = (maxValue + minValue) / 2;
 
-        float width = maxValue - minValue;
-
-        int r = 0;
-        int g = 0;
-        int b = 0;
-
-        if (value < middle) {
-            b = (int) (255 * (Math.abs((value / minValue))));
-            g = (int) (255 * (1 - Math.abs(value / minValue)));
-        } else {
-            g = (int) (255 * (1 - (value / maxValue)));
-            r = (int) (255 * (value / maxValue));
-        }
-
-        return Color.rgb(r, g, b);
-    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int desiredWidth = 100;
-        int desiredHeight = 100;
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -125,6 +117,34 @@ public class SensorDisplayView extends View {
             //Must be this size
             height = heightSize;
             valueFontPaint.setTextSize((float) (height / 1.5));
+            underValueFontPaint.setTextSize((float) (height / 1.5));
         }
+    }
+
+    public float getValue() {
+        return value;
+    }
+
+    public void setValue(float value) {
+        this.value = value;
+        try {
+            currentValueColor = Util.valueToColor(value, minValue, maxValue);
+        } catch (InvalidParameterException ignored) {}
+    }
+
+    public float getMaxValue() {
+        return maxValue;
+    }
+
+    public void setMaxValue(float maxValue) {
+        this.maxValue = maxValue;
+    }
+
+    public float getMinValue() {
+        return minValue;
+    }
+
+    public void setMinValue(float minValue) {
+        this.minValue = minValue;
     }
 }
