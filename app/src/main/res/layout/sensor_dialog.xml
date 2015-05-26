@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sensor_title_et"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="120dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="20dp"
+        android:textSize="8pt"/>
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sensor_start_et"
+        android:layout_marginTop="20dp"
+        android:textSize="8pt"
+        android:layout_below="@+id/sensor_title_et"
+        android:layout_alignLeft="@+id/sensor_title_et"
+        android:layout_alignStart="@+id/sensor_title_et" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Название:"
+        android:id="@+id/textView"
+        android:layout_alignBottom="@+id/sensor_title_et"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textSize="8pt"
+        android:layout_alignTop="@+id/sensor_title_et"
+        android:gravity="center_vertical" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Начинается с:"
+        android:id="@+id/textView2"
+        android:textSize="8pt"
+        android:layout_alignBottom="@+id/sensor_start_et"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView"
+        android:layout_alignTop="@+id/sensor_start_et"
+        android:gravity="center_vertical" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sensor_end_et"
+        android:textSize="8pt"
+        android:layout_below="@+id/sensor_start_et"
+        android:layout_alignLeft="@+id/sensor_start_et"
+        android:layout_alignStart="@+id/sensor_start_et"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Оканчивается:"
+        android:id="@+id/textView5"
+        android:textSize="8pt"
+        android:gravity="center_vertical"
+        android:layout_alignBottom="@+id/sensor_end_et"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/sensor_end_et" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sensor_max_et"
+        android:textSize="8pt"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/sensor_end_et"
+        android:layout_alignLeft="@+id/sensor_end_et"
+        android:layout_alignStart="@+id/sensor_end_et" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Максимум:"
+        android:id="@+id/textView6"
+        android:textSize="8pt"
+        android:gravity="center_vertical"
+        android:layout_alignBottom="@+id/sensor_max_et"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/sensor_max_et" />
+
+</RelativeLayout>
