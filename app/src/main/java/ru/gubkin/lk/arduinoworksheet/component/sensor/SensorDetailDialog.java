@@ -13,7 +13,7 @@ import ru.gubkin.lk.arduinoworksheet.component.servo.RadialScaleView;
 import ru.gubkin.lk.arduinoworksheet.util.Util;
 
 /**
- * Created by Андрей on 24.05.2015.
+ * Created by  on 24.05.2015.
  */
 public class SensorDetailDialog extends Dialog {
     private Sensor sensor;

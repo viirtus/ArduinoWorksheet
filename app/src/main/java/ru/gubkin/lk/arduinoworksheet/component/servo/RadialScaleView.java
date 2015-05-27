@@ -21,10 +21,10 @@ public class RadialScaleView extends View {
     private final static String TAG = "SERVO_VIEW";
 
     private String name = "Сервопривод";
-    private int circleColor = 0xff27A0D9;
-    private int arrowColor = 0xff92CEEB;
-    private int valueColor = 0xff27A0D9;
-    private int nameColor = 0xff27A0D9;
+    private int circleColor = 0xffB2EBF2;
+    private int arrowColor = 0xffE0F7FA;
+    private int valueColor = 0xffB2EBF2;
+    private int nameColor = 0xffB2EBF2;
 
     private Paint arrowPaint;
     private Paint markerPaint;
@@ -37,7 +37,7 @@ public class RadialScaleView extends View {
     private float bearing = 90;
 
     private float maxValue = 180;
-    private float minValue = 100;
+    private float minValue = 0;
 
     private float value = 120;
     private int textHeight;
@@ -131,7 +131,7 @@ public class RadialScaleView extends View {
                 py + radius);
         canvas.drawArc(oval, 180, 180, true, circlePaint);
 
-        canvas.drawLine(circleStrokeWidth, py, px * 2 - circleStrokeWidth, py, whitePaint);
+//        canvas.drawLine(circleStrokeWidth, py, px * 2 - circleStrokeWidth, py, whitePaint);
 
 
         canvas.save();

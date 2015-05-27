@@ -39,7 +39,7 @@ public class Util {
         return px / (metrics.densityDpi / 160f);
     }
 
-    public static int valueToColor(float value, float minValue, float maxValue) {
+    public static int valueToColor(float value, float minValue, float maxValue, float darkness) {
 
         if (value < minValue || value > maxValue) {
             throw new InvalidParameterException("value mast be > minValue and < maxValue");
@@ -70,7 +70,15 @@ public class Util {
             r = (int) (255 * (value / middle - 1));
         }
 
-        return Color.rgb(r, g, b);
+        return Color.rgb((int) (darkness * r), (int) (darkness * g), (int) (darkness * b));
+    }
+
+    public static int valueToColor(float value, float minValue, float maxValue) {
+        return valueToColor(value, minValue, maxValue, 1);
+    }
+
+    public static int valueToDarkColor(float value, float minValue, float maxValue) {
+        return valueToColor(value, minValue, maxValue, 0.5f);
     }
 
     public static int getActivityHeight(MainActivity activity) {

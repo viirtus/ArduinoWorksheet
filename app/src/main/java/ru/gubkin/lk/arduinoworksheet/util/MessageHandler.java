@@ -29,9 +29,9 @@ public class MessageHandler extends Handler {
     public void handleMessage(Message msg) {
         String read = (String) msg.obj;
         for (MessageListener listener: listeners) {
-            Log.i(TAG, "Данные от Arduino: " + read);
+//            Log.i(TAG, "Данные от Arduino: " + read);
             String value = findValue(read, listener);
-            Log.i(TAG, "Найдено в строке по правилам: " + value);
+//            Log.i(TAG, "Найдено в строке по правилам: " + value);
             listener.onReceiveMessage(value);
         }
     };

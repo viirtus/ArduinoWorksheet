@@ -109,9 +109,9 @@ public class LedDBHandler extends SQLiteOpenHelper {
     }
 
     public int getDataKeyOffIndex() {
-        return 4;
+        return 5;
     }
     public int getDataKeyOnIndex() {
-        return 5;
+        return 4;
     }
 }

@@ -7,6 +7,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 /**
  * Created by root on 06.05.15.
@@ -16,13 +17,13 @@ public class BluetoothThread extends Thread {
     private final static String END_OF_LINE = "\n";
     private final OutputStream outputStream;
     private final InputStream inputStream;
-
-    private  Handler handler;
+    private ArrayList<Handler> handlers;
 
 
     protected BluetoothThread(BluetoothSocket copyBtSocket) throws IOException {
         outputStream = copyBtSocket.getOutputStream();
         inputStream = copyBtSocket.getInputStream();
+        handlers = new ArrayList<>();
     }
 
     protected void sendData(String message) throws IOException {
@@ -52,9 +53,10 @@ public class BluetoothThread extends Thread {
                         if (b == delimiter) {
                             byte[] encodedBytes = new byte[readBufferPosition];
                             System.arraycopy(buffer, 0, encodedBytes, 0, encodedBytes.length);
-                            final String data = new String(encodedBytes, "US-ASCII");
+                            String data = new String(encodedBytes, "US-ASCII");
+                            data = data.replaceAll("\r", "");
                             readBufferPosition = 0;
-                            if (handler != null) {
+                            for (Handler handler : handlers) {
                                 handler.obtainMessage(0, data).sendToTarget();
                             }
                         } else {
@@ -80,7 +82,7 @@ public class BluetoothThread extends Thread {
 
     }
 
-    public void setHandler(Handler handler) {
-        this.handler = handler;
+    public void registerHandler(Handler handler) {
+        handlers.add(handler);
     }
 }

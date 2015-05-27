@@ -6,6 +6,7 @@ import java.util.Observer;
 
 import ru.gubkin.lk.arduinoworksheet.adapter.LedGridAdapter;
 import ru.gubkin.lk.arduinoworksheet.db.LedDBHandler;
+import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
 
 /**processLed
  * Created by Андрей on 02.05.2015.
@@ -43,7 +44,7 @@ public class LEDObserver implements Observer {
             }
 
         }
-        gridAdapter.notifyDataSetChanged();
+        controller.notifyChange();
     }
 
     public void setDisplayedLeds(ArrayList<LED> displayedLeds) {

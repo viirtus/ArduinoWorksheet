@@ -76,7 +76,7 @@ public class ServoController extends Controller {
             wrapper = inflater.inflate(R.layout.servo_grid, parent, false);
             addButton = (Button) wrapper.findViewById(R.id.servo_add_button);
             gridView = (GridView) wrapper.findViewById(R.id.servo_grid);
-            gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(160, context));
+            gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(165, context));
             gridView.setAdapter(adapter);
             registerListeners();
         }
@@ -89,7 +89,7 @@ public class ServoController extends Controller {
 
     public void notifyChange() {
         adapter.notifyDataSetChanged();
-        gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(150, context));
+        gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(155, context));
     }
 
 

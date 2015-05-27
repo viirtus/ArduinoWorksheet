@@ -71,6 +71,14 @@ public class SensorController extends Controller {
                 dialog.show();
             }
         });
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Dialog dialog = new SensorDialog(context, items.get(position));
+                dialog.show();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -80,7 +88,7 @@ public class SensorController extends Controller {
             wrapper = inflater.inflate(R.layout.sensor_grid, parent, false);
             addButton = (Button) wrapper.findViewById(R.id.sensor_add_button);
             gridView = (GridView) wrapper.findViewById(R.id.sensor_grid);
-            gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(110, context));
+            gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(125, context) + Util.convertDpToPixel(5, context));
             gridView.setAdapter(adapter);
             registerListeners();
         }
@@ -89,7 +97,7 @@ public class SensorController extends Controller {
 
     public void notifyChange() {
         adapter.notifyDataSetChanged();
-        gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(110, context));
+        gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(125, context) + Util.convertDpToPixel(5, context));
     }
 
     public void deleteSensor(Sensor sensor) {

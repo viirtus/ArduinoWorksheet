@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class LedGridAdapter extends BaseAdapter {
     private class ViewHolder {
         ImageView image;
         TextView title;
+        RelativeLayout layout;
     }
 
     @Override
@@ -52,6 +54,7 @@ public class LedGridAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.image = (ImageView) convertView.findViewById(R.id.led_image);
             holder.title = (TextView) convertView.findViewById(R.id.led_title);
+            holder.layout = (RelativeLayout) convertView.findViewById(R.id.led_layout);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -59,6 +62,7 @@ public class LedGridAdapter extends BaseAdapter {
         LED led = items.get(position);
         holder.image.setImageResource(led.getImageResourse());
         holder.title.setText(led.getTitle());
+        holder.layout.setBackgroundColor(led.getBackground());
         return convertView;
     }
 }

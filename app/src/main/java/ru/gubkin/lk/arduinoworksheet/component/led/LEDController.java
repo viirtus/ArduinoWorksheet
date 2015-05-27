@@ -5,9 +5,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -15,11 +12,13 @@ import android.widget.GridView;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.R;
 import ru.gubkin.lk.arduinoworksheet.adapter.LedGridAdapter;
 import ru.gubkin.lk.arduinoworksheet.bt.BluetoothHandler;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
 import ru.gubkin.lk.arduinoworksheet.db.LedDBHandler;
+import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
 import ru.gubkin.lk.arduinoworksheet.util.Util;
 
 /**
@@ -33,15 +32,19 @@ public class LEDController extends Controller {
     private LedDBHandler ledDb;
     private LEDObserver ledObserver;
     private BluetoothHandler bluetoothHandler;
+    private MessageHandler messageHandler;
     private Button addButton;
 
     public LEDController(Context context, BluetoothHandler handler) {
         super(context);
         ledDb = new LedDBHandler(context);
-        ledObserver = new LEDObserver(ledDb, this);
-        leds = LEDFactory.getSavedLed(ledDb, ledObserver);
-        ledGridAdapter = new LedGridAdapter(context, leds);
         bluetoothHandler = handler;
+        messageHandler = new MessageHandler();
+        if (!MainActivity.debug)
+            bluetoothHandler.registerMessageHandler(messageHandler);
+        ledObserver = new LEDObserver(ledDb, this);
+        leds = LEDFactory.getSavedLed(ledDb, ledObserver, messageHandler);
+        ledGridAdapter = new LedGridAdapter(context, leds);
     }
 
     protected void processLed(LED l) {
@@ -91,7 +94,7 @@ public class LEDController extends Controller {
             addButton = (Button) wrapper.findViewById(R.id.led_add_button);
 
             ledGrid = (GridView) wrapper.findViewById(R.id.led_grid);
-            ledGrid.getLayoutParams().height = (int) ((Math.ceil(leds.size() / 4.0) ) * Util.convertDpToPixel(75, context));
+            ledGrid.getLayoutParams().height = (int) ((Math.ceil(leds.size() / 2.0)) * Util.convertDpToPixel(125, context) + Util.convertDpToPixel(5, context)) ;
             ledGrid.setAdapter(ledGridAdapter);
             ledObserver.setAdapter(ledGridAdapter);
             ledObserver.setDisplayedLeds(leds);
@@ -104,7 +107,7 @@ public class LEDController extends Controller {
     @Override
     public void notifyChange() {
         ledGridAdapter.notifyDataSetChanged();
-        ledGrid.getLayoutParams().height = (int) ((Math.ceil(leds.size() / 4.0) ) * Util.convertDpToPixel(75, context));
+        ledGrid.getLayoutParams().height = (int) ((Math.ceil(leds.size() / 2.0)) * Util.convertDpToPixel(125, context) + Util.convertDpToPixel(5, context));
     }
 
 

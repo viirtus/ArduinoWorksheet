@@ -57,6 +57,8 @@ public class MainActivityFragment extends Fragment {
         groupList.setAdapter(adapter);
         groupList.setOnItemClickListener(new GroupHeaderListener(adapter));
 
+
+
         controllers = new ArrayList<>();
         controllers.add(ledController);
         controllers.add(servoController);

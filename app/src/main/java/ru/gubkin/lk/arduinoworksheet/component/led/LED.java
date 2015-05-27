@@ -1,13 +1,16 @@
 package ru.gubkin.lk.arduinoworksheet.component.led;
 
+import android.util.Log;
+
 import java.util.Observable;
 
 import ru.gubkin.lk.arduinoworksheet.R;
+import ru.gubkin.lk.arduinoworksheet.util.MessageListener;
 
 /**
  * Created by Андрей on 01.05.2015.
  */
-public class LED extends Observable {
+public class LED extends Observable implements MessageListener {
     protected static final Integer DELETE_KEY = -1;
     protected static final Integer UPDATE_KEY = -2;
     protected static final Integer TOGGLE_KEY = -3;
@@ -40,19 +43,22 @@ public class LED extends Observable {
     }
 
     public enum LedColors {
-        UNDEFINED("add_new", "Добавить", -1),
-        RED("Red", "Красный", 0),
-        GREEN("Green", "Зеленый", 1),
-        BLUE("Blue", "Синий", 2);
+        UNDEFINED("add_new", "Добавить", -1, 0),
+        RED("Red", "Красный", 0, 0xffB71C1C),
+        GREEN("Green", "Зеленый", 1, 0xff00695C),
+        BLUE("Blue", "Синий", 2, 0xff0277BD);
 
         private final String engName;
         private final String ruName;
+
+        private final int color;
         private final int position;
 
-        LedColors(String engName, String ruName, int position) {
+        LedColors(String engName, String ruName, int position, int color) {
             this.engName = engName;
             this.ruName = ruName;
             this.position = position;
+            this.color = color;
         }
 
         public String getEngName() {
@@ -65,6 +71,10 @@ public class LED extends Observable {
 
         public int getColorId() {
             return position;
+        }
+
+        public int getColor() {
+            return color;
         }
 
 
@@ -91,11 +101,10 @@ public class LED extends Observable {
 
     public void toggleState(boolean forceToggle) {
         isActive = !isActive;
+        setChanged();
         if (forceToggle) {
-            setChanged();
             notifyObservers(TOGGLE_KEY);
         } else {
-            setChanged();
             notifyObservers(UPDATE_KEY);
         }
     }
@@ -160,6 +169,38 @@ public class LED extends Observable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getBackground() {
+        if (isActive) {
+            return color.getColor();
+        }
+        return 0xff546e7a;
+    }
+
+    @Override
+    public String getStartPattern() {
+        return "";
+    }
+
+    @Override
+    public String getEndPattern() {
+        return "";
+    }
+
+    @Override
+    public void onReceiveMessage(String message) {
+
+        if (message.equals(commandOn)) {
+            isActive = true;
+            setChanged();
+            notifyObservers(-777);
+        }
+        if (message.equals(commandOff)) {
+            isActive = false;
+            setChanged();
+            notifyObservers(-777);
+        }
     }
 
     @Override

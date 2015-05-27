@@ -25,8 +25,9 @@ import ru.gubkin.lk.arduinoworksheet.bt.BluetoothHandler;
 
 
 public class MainActivity extends ActionBarActivity {
+    String makerStudio = "98:D3:31:50:4A:1B";
     private static final String BUNDLE_NT_HANDLER = "bt_handler";
-    public static boolean debug = true;
+    public static boolean debug = false;
     private Context context;
     private Toolbar toolbar;
     private FrameLayout mainFrame;
@@ -67,11 +68,14 @@ public class MainActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         progressDialog = new ProgressDialog(this);
         handler = new BluetoothHandler(this);
+
+
         if (debug) {
             startMainFragment();
         } else {
             showDevicesList();
         }
+        tryToConnect(null);
         context = this;
 
         IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
@@ -86,7 +90,7 @@ public class MainActivity extends ActionBarActivity {
         if (!debug) {
             showProgressDialog();
             try {
-                handler.tryToConnect(device.getAddress());
+                handler.tryToConnect(makerStudio);
             } catch (IOException e) {
                 e.printStackTrace();
             }

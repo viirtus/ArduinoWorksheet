@@ -5,6 +5,7 @@ import android.database.Cursor;
 import java.util.ArrayList;
 
 import ru.gubkin.lk.arduinoworksheet.db.LedDBHandler;
+import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
 
 /**
  * Created by Андрей on 02.05.2015.
@@ -17,7 +18,7 @@ public class LEDFactory {
         return led;
     }
 
-    public static ArrayList<LED> getSavedLed(LedDBHandler db, LEDObserver observer) {
+    public static ArrayList<LED> getSavedLed(LedDBHandler db, LEDObserver observer, MessageHandler messageHandler) {
         ArrayList<LED> list = new ArrayList<>();
         Cursor cursor = db.getAllSavedLed();
         cursor.moveToFirst();
@@ -31,13 +32,14 @@ public class LEDFactory {
 
             LED led = new LED(
                     idToEnumColor(color),
-                    state == 1,
+                    true,
                     title,
                     id,
                     dataKeyOn,
                     dataKeyOff
             );
             led.addObserver(observer);
+            messageHandler.registerListeners(led);
             list.add(led);
             cursor.moveToNext();
         }

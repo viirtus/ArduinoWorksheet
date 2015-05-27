@@ -1,5 +1,8 @@
 package ru.gubkin.lk.arduinoworksheet.component.sensor;
 
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import java.util.Observable;
 
 import ru.gubkin.lk.arduinoworksheet.component.servo.RadialScaleView;
@@ -22,8 +25,10 @@ public class Sensor extends Observable implements MessageListener {
     private float value;
     private SensorDisplayView sensorView;
     private RadialScaleView sensorRadialView;
+    private TextView tv;
+    private RelativeLayout layout;
 
-    public Sensor(String name, String startPattern, String endPattern, int id, float maxValue, float minValue){
+    public Sensor(String name, String startPattern, String endPattern, int id, float maxValue, float minValue) {
         this.name = name;
         this.startPattern = startPattern;
         this.endPattern = endPattern;
@@ -60,29 +65,34 @@ public class Sensor extends Observable implements MessageListener {
 
     @Override
     public void onReceiveMessage(String message) {
-        if (sensorView != null) {
-            try {
-                float value = Float.parseFloat(message);
+        try {
+            float value = Float.parseFloat(message);
+            int color = Util.valueToColor(value, minValue, maxValue);
 
-                this.value = value;
-                if (value > maxValue) {
-                    value = maxValue;
-                }
-                if (value < minValue) {
-                    value = minValue;
-                }
-
+            this.value = value;
+            if (value > maxValue) {
+                value = maxValue;
+            }
+            if (value < minValue) {
+                value = minValue;
+            }
+            if (sensorView != null) {
                 sensorView.setValue(value);
                 sensorView.invalidate();
-
-                if (sensorRadialView != null) {
-                    sensorRadialView.setValue(value);
-                    sensorRadialView.invalidate();
-                }
-
-            } catch (NumberFormatException ignored) {
-
             }
+
+            if (sensorRadialView != null) {
+                sensorRadialView.setValue(value);
+                sensorRadialView.setArrowColor(color);
+                sensorRadialView.invalidate();
+            }
+
+            if (tv != null) {
+                tv.setText(String.valueOf(value));
+            }
+            validateLayout();
+        } catch (NumberFormatException ignored) {
+
         }
     }
 
@@ -108,6 +118,7 @@ public class Sensor extends Observable implements MessageListener {
         this.maxValue = maxValue;
         setChanged();
         notifyObservers(UPDATE_KEY);
+        validateLayout();
     }
 
     public float getMinValue() {
@@ -132,6 +143,23 @@ public class Sensor extends Observable implements MessageListener {
         sensorView.setMinValue(minValue);
         sensorView.setValue(value);
         sensorView.invalidate();
+    }
+
+    public void setTextView(TextView tv) {
+        this.tv = tv;
+
+    }
+
+    private void validateLayout() {
+
+        int darkColor = Util.valueToDarkColor(value, minValue, maxValue);
+        if (layout != null)
+            layout.setBackgroundColor(darkColor);
+    }
+
+    public void setLayout(RelativeLayout layout) {
+        this.layout = layout;
+        validateLayout();
     }
 
     public void setSensorRadialView(RadialScaleView sensorRadialView) {

@@ -3,7 +3,6 @@ package ru.gubkin.lk.arduinoworksheet.bt;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -12,7 +11,6 @@ import android.os.Message;
 import android.util.Log;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.UUID;
 
 import ru.gubkin.lk.arduinoworksheet.MainActivity;
@@ -96,7 +94,7 @@ public class BluetoothHandler extends Handler {
     };
 
     public void registerMessageHandler(MessageHandler handler) {
-        thread.setHandler(handler);
+        thread.registerHandler(handler);
     }
 
     public void sendData(String message) throws IOException {

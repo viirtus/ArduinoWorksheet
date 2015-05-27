@@ -30,13 +30,13 @@ public class SensorDialog extends Dialog {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(TITLE);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-       /* View v = inflater.inflate(R.layout.sensor_dialog, null);
+        View v = inflater.inflate(R.layout.sensor_dialog, null);
         titleEt = (EditText) v.findViewById(R.id.sensor_title_et);
         startEt = (EditText) v.findViewById(R.id.sensor_start_et);
         endEt = (EditText) v.findViewById(R.id.sensor_end_et);
         maxEt = (EditText) v.findViewById(R.id.sensor_max_et);
         builder.setView(v);
-        addButtons (builder);*/
+        addButtons (builder);
         initInputs();
         dialog = builder.create();
     }
