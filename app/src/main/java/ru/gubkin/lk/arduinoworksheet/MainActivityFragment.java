@@ -11,14 +11,13 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ru.gubkin.lk.arduinoworksheet.adapter.GroupAdapter;
-import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
-import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
 import ru.gubkin.lk.arduinoworksheet.component.GroupItem;
 import ru.gubkin.lk.arduinoworksheet.component.ListItem;
 import ru.gubkin.lk.arduinoworksheet.component.led.LEDController;
 import ru.gubkin.lk.arduinoworksheet.component.sensor.SensorController;
 import ru.gubkin.lk.arduinoworksheet.component.servo.ServoController;
+import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
 
 
 /**
@@ -68,7 +67,10 @@ public class MainActivityFragment extends Fragment {
         super.onResume();
         //register all listeners
         for (Controller controller: controllers) {
-            controller.registerListeners();
+            try {
+                controller.registerListeners();
+            } catch (Exception e) {
+            }
         }
     }
 

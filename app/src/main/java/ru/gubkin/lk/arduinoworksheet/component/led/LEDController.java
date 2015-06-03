@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.R;
 import ru.gubkin.lk.arduinoworksheet.adapter.LedGridAdapter;
-import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
+import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
 import ru.gubkin.lk.arduinoworksheet.db.LedDBHandler;
 import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
 import ru.gubkin.lk.arduinoworksheet.util.Util;
@@ -106,6 +106,7 @@ public class LEDController extends Controller {
             ledGrid = (GridView) wrapper.findViewById(R.id.led_grid);
             ledGrid.getLayoutParams().height = (int) ((Math.ceil(leds.size() / 2.0)) * Util.convertDpToPixel(125, context) + Util.convertDpToPixel(5, context)) ;
             ledGrid.setAdapter(ledGridAdapter);
+            registerListeners();
         }
 
         return wrapper;

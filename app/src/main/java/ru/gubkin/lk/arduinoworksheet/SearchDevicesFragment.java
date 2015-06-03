@@ -16,6 +16,9 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ru.gubkin.lk.arduinoworksheet.adapter.DevicesAdapter;
+import ru.gubkin.lk.arduinoworksheet.component.DeviceListItem;
+import ru.gubkin.lk.arduinoworksheet.component.HeaderListItem;
+import ru.gubkin.lk.arduinoworksheet.component.ListItem;
 import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
 
 /**
@@ -23,7 +26,7 @@ import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
  */
 public class SearchDevicesFragment extends Fragment {
     private DevicesAdapter btDeviceAdapter;
-
+    private ArrayList<ListItem> items;
     private final BroadcastReceiver btReceiver = new BroadcastReceiver(){
 
         @Override
@@ -31,7 +34,8 @@ public class SearchDevicesFragment extends Fragment {
             String action = intent.getAction();
             if (action.equals(BluetoothDevice.ACTION_FOUND)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                btDeviceAdapter.add(device);
+                DeviceListItem listItem = new DeviceListItem(device.getName(), device.getAddress(), ListItem.ItemType.ITEM_BLUETOOTH);
+                items.add(1, listItem);
                 btDeviceAdapter.notifyDataSetChanged();
             }
         }
@@ -49,17 +53,31 @@ public class SearchDevicesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_search, container, false);
         ListView list = (ListView) v.findViewById(R.id.bt_devices_lv);
-        btDeviceAdapter = new DevicesAdapter(getActivity(), new ArrayList<BluetoothDevice>());
+        items = new ArrayList<>();
+        items.add(new HeaderListItem("Bluetooth"));
+        items.add(new HeaderListItem("TCP/IP"));
+        items.add(new DeviceListItem("Arduino home", "192.168.1.83:2501", ListItem.ItemType.ITEM_TCP));
+        btDeviceAdapter = new DevicesAdapter(getActivity(), items);
         list.setAdapter(btDeviceAdapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((MainActivity) getActivity()).tryToConnect((BluetoothDevice) btDeviceAdapter.getItem(position));
+                ListItem item = items.get(position);
+                if (item.getViewType() == ListItem.ItemType.ITEM_BLUETOOTH.ordinal()) {
+                    ((MainActivity) getActivity()).tryToConnectBluetooth(item.getInfo());
+                } else {
+                    ((MainActivity) getActivity()).tryToConnectTcp(item.getInfo());
+                }
 //                getFragmentManager().beginTransaction().remove(me).commit();
             }
         });
         return v;
     }
+
+    /*private ArrayList<ListItem> getDeviceList() {
+        ArrayList<ListItem> items = new ArrayList<>();
+
+    }*/
 
     @Override
     public void onResume() {

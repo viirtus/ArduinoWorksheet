@@ -15,9 +15,8 @@ import java.util.ArrayList;
 import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.R;
 import ru.gubkin.lk.arduinoworksheet.adapter.SensorGridAdapter;
-import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
-import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
+import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
 import ru.gubkin.lk.arduinoworksheet.db.SensorDBHandler;
 import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
 import ru.gubkin.lk.arduinoworksheet.util.Util;
@@ -96,6 +95,7 @@ public class SensorController extends Controller {
             gridView = (GridView) wrapper.findViewById(R.id.sensor_grid);
             gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(125, context) + Util.convertDpToPixel(5, context));
             gridView.setAdapter(adapter);
+            registerListeners();
         }
         return wrapper;
     }

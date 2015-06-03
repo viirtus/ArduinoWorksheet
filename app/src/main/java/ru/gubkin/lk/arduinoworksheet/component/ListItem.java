@@ -9,10 +9,13 @@ import android.view.ViewGroup;
  */
 public abstract class ListItem {
 
-    enum ItemType {
-        HEADER, ITEM
-    }
+    public abstract String getInfo();
 
     public abstract int getViewType();
+
     public abstract View getView(LayoutInflater inflater, View convertView, ViewGroup parent);
+
+    public enum ItemType {
+        HEADER, ITEM_BLUETOOTH, ITEM_TCP
+    }
 }

@@ -1,17 +1,14 @@
 package ru.gubkin.lk.arduinoworksheet.adapter;
 
-import android.bluetooth.BluetoothDevice;
-import android.content.ContentValues;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import ru.gubkin.lk.arduinoworksheet.R;
+import ru.gubkin.lk.arduinoworksheet.component.ListItem;
 
 /**
  * Created by Андрей on 07.05.2015.
@@ -19,17 +16,16 @@ import ru.gubkin.lk.arduinoworksheet.R;
 public class DevicesAdapter extends BaseAdapter {
     private LayoutInflater inflater;
 
-    private ArrayList<BluetoothDevice> items;
+    private ArrayList<ListItem> items;
 
-    public DevicesAdapter(Context context, ArrayList<BluetoothDevice> items) {
+    public DevicesAdapter(Context context, ArrayList<ListItem> items) {
         this.items = items;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void add(BluetoothDevice device) {
-        if (!items.contains(device)) {
-            items.add(device);
-        }
+    @Override
+    public boolean isEnabled(int position) {
+        return items.get(position).getViewType() != ListItem.ItemType.HEADER.ordinal();
     }
 
     @Override
@@ -47,26 +43,9 @@ public class DevicesAdapter extends BaseAdapter {
         return 0;
     }
 
-    class ViewHolder {
-        TextView name;
-        TextView mac;
-    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.device_li, parent, false);
-            holder.name = (TextView) convertView.findViewById(R.id.device_name_tv);
-            holder.mac = (TextView) convertView.findViewById(R.id.device_mac_tv);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-        holder.name.setText(items.get(position).getName());
-        holder.mac.setText(items.get(position).getAddress());
-
-        return convertView;
+        return items.get(position).getView(inflater, convertView, parent);
     }
 }

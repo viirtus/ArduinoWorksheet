@@ -13,9 +13,8 @@ import java.util.ArrayList;
 
 import ru.gubkin.lk.arduinoworksheet.R;
 import ru.gubkin.lk.arduinoworksheet.adapter.ServoGridAdapter;
-import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
-import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
+import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
 import ru.gubkin.lk.arduinoworksheet.db.ServoDBHandler;
 import ru.gubkin.lk.arduinoworksheet.util.Util;
 
@@ -79,6 +78,7 @@ public class ServoController extends Controller {
             gridView = (GridView) wrapper.findViewById(R.id.servo_grid);
             gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(165, context));
             gridView.setAdapter(adapter);
+            registerListeners();
         }
         return wrapper;
     }

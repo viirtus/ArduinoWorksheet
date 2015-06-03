@@ -3,9 +3,7 @@ package ru.gubkin.lk.arduinoworksheet.connect.bt;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
@@ -24,18 +22,32 @@ public class BluetoothHandler extends ConnectionHandler {
     private static final UUID _UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final static String TAG = "BT_HANDLER";
     private final static int REQUEST_ENABLE_BT = 0;
+    private String mac;
     private BluetoothAdapter adapter;
     private BluetoothThread thread;
     private BluetoothConnectionThread threadConnection;
     private String lastConnect;
 
 
-    public BluetoothHandler(MainActivity context) {
+    public BluetoothHandler(MainActivity context, String mac) {
         super(Looper.getMainLooper(), context);
+        this.mac = mac;
         adapter = BluetoothAdapter.getDefaultAdapter();
     }
 
-    public void tryToConnect(String mac) throws IOException {
+    public static void startDiscovery(MainActivity activity) {
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if (adapter != null) {
+            adapter.startDiscovery();
+            if (!adapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
+        }
+    }
+
+    @Override
+    public void connectRequest() {
         if (checkBtState()) {
             BluetoothDevice device = adapter.getRemoteDevice(mac);
             adapter.cancelDiscovery();
@@ -59,17 +71,6 @@ public class BluetoothHandler extends ConnectionHandler {
         }
         Log.i(TAG, "BT adapter not exist");
         return false;
-    }
-
-    public static void startDiscovery(MainActivity activity) {
-        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        if (adapter != null) {
-            adapter.startDiscovery();
-            if (!adapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
-        }
     }
 
     @Override
@@ -97,7 +98,8 @@ public class BluetoothHandler extends ConnectionHandler {
         if (thread != null) {
             thread.sendData(message);
         } else {
-            tryToConnect(lastConnect);
+            mac = lastConnect;
+            connectRequest();
         }
     }
 

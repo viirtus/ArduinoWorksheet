@@ -9,15 +9,19 @@ import android.view.ViewGroup;
  */
 public class GroupItem extends ListItem  {
     private static ItemType type = ItemType.HEADER;
+    private Controller controller;
+
+    public GroupItem(Controller controller) {
+        this.controller = controller;
+    }
 
     public Controller getController() {
         return controller;
     }
 
-    private Controller controller;
-
-    public GroupItem (Controller controller) {
-        this.controller = controller;
+    @Override
+    public String getInfo() {
+        return null;
     }
 
     @Override

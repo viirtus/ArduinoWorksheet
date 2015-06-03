@@ -9,7 +9,7 @@ import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
 
 /**
- * Created by Андрей on 30.05.2015.
+ * Created by пїЅпїЅпїЅпїЅпїЅпїЅ on 30.05.2015.
  */
 public abstract class ConnectionHandler extends Handler {
 
@@ -31,5 +31,7 @@ public abstract class ConnectionHandler extends Handler {
      * @param handler new handler
      */
     public abstract void registerMessageHandler(MessageHandler handler);
+
+    public abstract void connectRequest();
 
 }
