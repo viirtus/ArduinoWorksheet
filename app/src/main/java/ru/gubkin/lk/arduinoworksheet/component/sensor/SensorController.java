@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.R;
 import ru.gubkin.lk.arduinoworksheet.adapter.SensorGridAdapter;
-import ru.gubkin.lk.arduinoworksheet.bt.BluetoothHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
 import ru.gubkin.lk.arduinoworksheet.db.SensorDBHandler;
 import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
@@ -25,7 +26,6 @@ import ru.gubkin.lk.arduinoworksheet.util.Util;
  * Created by root on 11.05.15.
  */
 public class SensorController extends Controller {
-    private final BluetoothHandler bluetoothHandler;
     private ArrayList<Sensor> items;
     private View wrapper;
     private GridView gridView;
@@ -38,15 +38,14 @@ public class SensorController extends Controller {
     private Button button;
     private LinearLayout layout;
 
-    public SensorController(Context context, BluetoothHandler bluetoothHandler) {
+    public SensorController(Context context, ConnectionHandler connectionHandler) {
         super(context);
-        this.bluetoothHandler = bluetoothHandler;
         dbHandler = new SensorDBHandler(context);
         observer = new SensorObserver(dbHandler, this);
         messageHandler = new MessageHandler();
 
         if (!MainActivity.debug)
-        bluetoothHandler.registerMessageHandler(messageHandler);
+        connectionHandler.registerMessageHandler(messageHandler);
 
         items = SensorFactory.getSavedSensor(dbHandler, messageHandler, observer);
 
@@ -82,6 +81,13 @@ public class SensorController extends Controller {
     }
 
     @Override
+    public void unregisterListeners() {
+        addButton.setOnClickListener(null);
+        gridView.setOnItemClickListener(null);
+        gridView.setOnItemLongClickListener(null);
+    }
+
+    @Override
     public View getViewItem(LayoutInflater inflater, View convertView, ViewGroup parent) {
         if (wrapper == null) {
             this.inflater = inflater;
@@ -90,7 +96,6 @@ public class SensorController extends Controller {
             gridView = (GridView) wrapper.findViewById(R.id.sensor_grid);
             gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(125, context) + Util.convertDpToPixel(5, context));
             gridView.setAdapter(adapter);
-            registerListeners();
         }
         return wrapper;
     }

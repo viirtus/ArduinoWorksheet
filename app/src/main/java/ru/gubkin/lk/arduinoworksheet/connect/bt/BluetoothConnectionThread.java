@@ -1,4 +1,4 @@
-package ru.gubkin.lk.arduinoworksheet.bt;
+package ru.gubkin.lk.arduinoworksheet.connect.bt;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * Created by Андрей on 07.05.2015.
  */
-public class BluetoothConnectionThread extends Thread {
+class BluetoothConnectionThread extends Thread {
     private static final UUID _UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private static final String TAG = "BT_CONNECTION";
 
@@ -29,7 +29,7 @@ public class BluetoothConnectionThread extends Thread {
         try {
             // MY_UUID is the app's UUID string, also used by the server code
             tmp = device.createRfcommSocketToServiceRecord(_UUID);
-        } catch (IOException e) { }
+        } catch (IOException ignored) { }
         socket = tmp;
 
     }

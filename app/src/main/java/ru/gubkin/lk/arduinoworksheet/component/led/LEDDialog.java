@@ -1,5 +1,6 @@
 package ru.gubkin.lk.arduinoworksheet.component.led;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -31,7 +32,7 @@ public class LEDDialog extends Dialog {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(TITLE);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.led_dialog, null);
+        @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.led_dialog, null);
 
         titleEt = (EditText) v.findViewById(R.id.servo_title_et);
         dataKeyOnEt= (EditText) v.findViewById(R.id.led_command_on_et);

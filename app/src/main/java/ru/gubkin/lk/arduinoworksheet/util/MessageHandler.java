@@ -34,7 +34,7 @@ public class MessageHandler extends Handler {
 //            Log.i(TAG, "Найдено в строке по правилам: " + value);
             listener.onReceiveMessage(value);
         }
-    };
+    }
 
     private String findValue(String line, MessageListener sensor) {
 

@@ -1,5 +1,6 @@
 package ru.gubkin.lk.arduinoworksheet.component.sensor;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -30,7 +31,7 @@ public class SensorDialog extends Dialog {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(TITLE);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.sensor_dialog, null);
+        @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.sensor_dialog, null);
         titleEt = (EditText) v.findViewById(R.id.sensor_title_et);
         startEt = (EditText) v.findViewById(R.id.sensor_start_et);
         endEt = (EditText) v.findViewById(R.id.sensor_end_et);

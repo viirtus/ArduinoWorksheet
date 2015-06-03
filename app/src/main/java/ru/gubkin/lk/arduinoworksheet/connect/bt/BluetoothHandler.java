@@ -1,4 +1,4 @@
-package ru.gubkin.lk.arduinoworksheet.bt;
+package ru.gubkin.lk.arduinoworksheet.connect.bt;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -14,35 +14,31 @@ import java.io.IOException;
 import java.util.UUID;
 
 import ru.gubkin.lk.arduinoworksheet.MainActivity;
+import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
 import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
 
 /**
  * Created by root on 06.05.15.
  */
-public class BluetoothHandler extends Handler {
+public class BluetoothHandler extends ConnectionHandler {
     private static final UUID _UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final static String TAG = "BT_HANDLER";
     private final static int REQUEST_ENABLE_BT = 0;
-    private Context context;
     private BluetoothAdapter adapter;
-    private BluetoothDevice device;
-    private BluetoothSocket socket;
     private BluetoothThread thread;
     private BluetoothConnectionThread threadConnection;
     private String lastConnect;
 
 
-    public BluetoothHandler(Context context) {
-        super(Looper.getMainLooper());
-        this.context = context;
+    public BluetoothHandler(MainActivity context) {
+        super(Looper.getMainLooper(), context);
         adapter = BluetoothAdapter.getDefaultAdapter();
     }
 
     public void tryToConnect(String mac) throws IOException {
         if (checkBtState()) {
-            device = adapter.getRemoteDevice(mac);
+            BluetoothDevice device = adapter.getRemoteDevice(mac);
             adapter.cancelDiscovery();
-
             threadConnection = new BluetoothConnectionThread(this, device);
             threadConnection.start();
             lastConnect = mac;
@@ -57,7 +53,7 @@ public class BluetoothHandler extends Handler {
 
             } else {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                ((MainActivity) context).startActivityForResult(enableBtIntent, 0);
+                activity.startActivityForResult(enableBtIntent, 0);
             }
             return true;
         }
@@ -81,22 +77,22 @@ public class BluetoothHandler extends Handler {
         if (msg.obj != null) {
             BluetoothSocket socket = (BluetoothSocket) msg.obj;
             try {
-
                 thread = new BluetoothThread(socket);
                 thread.start();
-                this.socket = socket;
-                ((MainActivity) context).startMainFragment();
+                activity.startMainFragment();
                 threadConnection.interrupt();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-    };
+    }
 
+    @Override
     public void registerMessageHandler(MessageHandler handler) {
         thread.registerHandler(handler);
     }
 
+    @Override
     public void sendData(String message) throws IOException {
         if (thread != null) {
             thread.sendData(message);

@@ -77,7 +77,7 @@ public class SensorDisplayView extends View {
     }
 
     private String formatNumber(float number) {
-        String format = "";
+        String format;
         float n = Math.abs(number);
         if (n == (int) n) {
             format = String.format("%04d", (int) n);

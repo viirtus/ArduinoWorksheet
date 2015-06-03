@@ -1,5 +1,6 @@
 package ru.gubkin.lk.arduinoworksheet.component.sensor;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -24,7 +25,7 @@ public class SensorDetailDialog extends Dialog {
         this.sensor = sensor;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.sensor_item_radiate, null);
+        @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.sensor_item_radiate, null);
         builder.setTitle(sensor.getName());
         sensor.setSensorRadialView((RadialScaleView) v.findViewById(R.id.sensor_one));
         builder.setView(v);

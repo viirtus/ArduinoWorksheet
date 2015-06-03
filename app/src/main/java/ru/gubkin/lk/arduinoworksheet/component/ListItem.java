@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 public abstract class ListItem {
 
     enum ItemType {
-        HEADER, ITEM;
+        HEADER, ITEM
     }
 
     public abstract int getViewType();

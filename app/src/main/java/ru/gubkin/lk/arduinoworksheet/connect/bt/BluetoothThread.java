@@ -1,4 +1,4 @@
-package ru.gubkin.lk.arduinoworksheet.bt;
+package ru.gubkin.lk.arduinoworksheet.connect.bt;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;

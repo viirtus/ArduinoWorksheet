@@ -11,14 +11,14 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ru.gubkin.lk.arduinoworksheet.adapter.GroupAdapter;
-import ru.gubkin.lk.arduinoworksheet.bt.BluetoothHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
 import ru.gubkin.lk.arduinoworksheet.component.GroupItem;
 import ru.gubkin.lk.arduinoworksheet.component.ListItem;
 import ru.gubkin.lk.arduinoworksheet.component.led.LEDController;
 import ru.gubkin.lk.arduinoworksheet.component.sensor.SensorController;
 import ru.gubkin.lk.arduinoworksheet.component.servo.ServoController;
-import ru.gubkin.lk.arduinoworksheet.listener.GroupHeaderListener;
 
 
 /**
@@ -26,10 +26,10 @@ import ru.gubkin.lk.arduinoworksheet.listener.GroupHeaderListener;
  */
 public class MainActivityFragment extends Fragment {
     private Context context;
-    private BluetoothHandler handler;
+    private ConnectionHandler handler;
     private ArrayList<Controller> controllers;
-    public MainActivityFragment() {
-        handler = MainActivity.getBluetoothHandler();
+    public MainActivityFragment(ConnectionHandler handler) {
+        this.handler = handler;
     }
 
     @Override
@@ -55,21 +55,29 @@ public class MainActivityFragment extends Fragment {
 
         GroupAdapter adapter = new GroupAdapter(context, items);
         groupList.setAdapter(adapter);
-        groupList.setOnItemClickListener(new GroupHeaderListener(adapter));
-
-
 
         controllers = new ArrayList<>();
         controllers.add(ledController);
         controllers.add(servoController);
+        controllers.add(sensorController);
         return v;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        for (Controller controller: controllers) {
-//            controller.registerListeners();
-//        }
+        //register all listeners
+        for (Controller controller: controllers) {
+            controller.registerListeners();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //unregister all listeners
+        for (Controller controller: controllers) {
+            controller.unregisterListeners();
+        }
     }
 }

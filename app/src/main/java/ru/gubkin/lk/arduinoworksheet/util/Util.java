@@ -46,17 +46,15 @@ public class Util {
         }
 
         float normal = Math.abs(minValue);
-        float normalMax = 0;
 
         //always 0, shift min to 0
         float normalMin = 0;
 
-        normalMax = maxValue + normal;
+        float normalMax = maxValue + normal;
 
         value += normal;
 
         float middle = normalMax / 2;
-        float width = normalMax;
 
         int r = 0;
         int g = 0;

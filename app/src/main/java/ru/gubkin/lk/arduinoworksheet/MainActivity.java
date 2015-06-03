@@ -2,7 +2,6 @@ package ru.gubkin.lk.arduinoworksheet;
 
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,16 +11,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import ru.gubkin.lk.arduinoworksheet.bt.BluetoothHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -32,7 +28,7 @@ public class MainActivity extends ActionBarActivity {
     private Toolbar toolbar;
     private FrameLayout mainFrame;
     private BluetoothDevice connectedDevice;
-    static private BluetoothHandler handler;
+    private BluetoothHandler handler;
     private ProgressDialog progressDialog;
     private MainActivityFragment componentsFragment;
 
@@ -75,7 +71,7 @@ public class MainActivity extends ActionBarActivity {
         } else {
             showDevicesList();
         }
-        tryToConnect(null);
+//        tryToConnect(null);
         context = this;
 
         IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
@@ -90,7 +86,7 @@ public class MainActivity extends ActionBarActivity {
         if (!debug) {
             showProgressDialog();
             try {
-                handler.tryToConnect(makerStudio);
+                handler.tryToConnect(device.getAddress());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -103,7 +99,7 @@ public class MainActivity extends ActionBarActivity {
             toolbar.setTitle(connectedDevice.getName());
             storeDevice();
         }
-        componentsFragment = new MainActivityFragment();
+        componentsFragment = new MainActivityFragment(handler);
 
         FragmentManager fragmentManager = getFragmentManager();
 
@@ -134,9 +130,6 @@ public class MainActivity extends ActionBarActivity {
         String deviceKey = "DEVICE";
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         String alreadyConnectedId = preferences.getString(deviceKey, "");
-        if (alreadyConnectedId.isEmpty()) {
-//            deleteDatabase("arduino_inner_db");
-        }
     }
 
     @Override
@@ -149,10 +142,6 @@ public class MainActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-    }
-
-    public static BluetoothHandler getBluetoothHandler() {
-        return handler;
     }
 
     @Override

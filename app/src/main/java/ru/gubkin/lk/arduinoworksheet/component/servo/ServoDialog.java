@@ -1,5 +1,6 @@
 package ru.gubkin.lk.arduinoworksheet.component.servo;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -38,7 +39,7 @@ public class ServoDialog  extends Dialog {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.DialogSlideAnim));
         builder.setTitle(TITLE);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.servo_dialog, null);
+        @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.servo_dialog, null);
         titleEt = (EditText) v.findViewById(R.id.servo_title_et);
         commandEt = (EditText) v.findViewById(R.id.led_command_on_et);
         maxValueEt = (EditText) v.findViewById(R.id.servo_max_value_et);

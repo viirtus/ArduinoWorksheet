@@ -16,7 +16,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ru.gubkin.lk.arduinoworksheet.adapter.DevicesAdapter;
-import ru.gubkin.lk.arduinoworksheet.bt.BluetoothHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
 
 /**
  * Created by Андрей on 07.05.2015.
@@ -47,7 +47,6 @@ public class SearchDevicesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final Fragment me = this;
         View v = inflater.inflate(R.layout.fragment_search, container, false);
         ListView list = (ListView) v.findViewById(R.id.bt_devices_lv);
         btDeviceAdapter = new DevicesAdapter(getActivity(), new ArrayList<BluetoothDevice>());

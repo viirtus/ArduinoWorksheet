@@ -122,7 +122,7 @@ public class LED extends Observable implements MessageListener {
         setColor(LEDFactory.idToEnumColor(id));
     }
 
-    public void setColor(LedColors color) {
+    private void setColor(LedColors color) {
         this.color = color;
         setChanged();
         notifyObservers(UPDATE_KEY);

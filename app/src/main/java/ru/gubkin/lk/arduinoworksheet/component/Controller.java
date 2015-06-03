@@ -15,20 +15,32 @@ import ru.gubkin.lk.arduinoworksheet.util.Util;
  */
 public abstract class Controller {
     protected Context context;
-    protected View wrapper;
-    protected boolean expanded = false;
 
-    public Controller(Context context) {
+    protected Controller(Context context) {
         this.context = context;
     }
 
+    /**
+     * Registering all necessary listeners to an UI components. Called when fragment fire onResume method
+     */
     public abstract void registerListeners();
+
+    /**
+     * Unregister all listeners when fragment fire onPause method;
+     */
+    public abstract void unregisterListeners();
+
+
+    /**
+     * Getting a View for inflating to the component list
+     * @param inflater used for inflate
+     * @param convertView for recycling
+     * @param parent parent
+     * @return View with components inside
+     */
     public abstract View getViewItem(LayoutInflater inflater, View convertView, ViewGroup parent);
 
     public abstract void notifyChange();
-    public int getFrameHeight() {
-        return Util.getActivityHeight((MainActivity) context) - (int) Util.convertDpToPixel(50, context);
-    }
 
 
 }

@@ -32,7 +32,7 @@ public class LEDFactory {
 
             LED led = new LED(
                     idToEnumColor(color),
-                    true,
+                    state == 1,
                     title,
                     id,
                     dataKeyOn,

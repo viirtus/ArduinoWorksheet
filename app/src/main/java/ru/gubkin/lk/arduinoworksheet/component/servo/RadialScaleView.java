@@ -54,11 +54,6 @@ public class RadialScaleView extends View {
         init(context);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
-    }
-
     private void init(Context context) {
         arrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         arrowPaint.setStrokeWidth(arrowStrokeWidth);

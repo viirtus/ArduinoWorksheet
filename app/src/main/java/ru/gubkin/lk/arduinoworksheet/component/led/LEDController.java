@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.R;
 import ru.gubkin.lk.arduinoworksheet.adapter.LedGridAdapter;
-import ru.gubkin.lk.arduinoworksheet.bt.BluetoothHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
 import ru.gubkin.lk.arduinoworksheet.db.LedDBHandler;
 import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
@@ -31,17 +31,16 @@ public class LEDController extends Controller {
     private ArrayList<LED> leds;
     private LedDBHandler ledDb;
     private LEDObserver ledObserver;
-    private BluetoothHandler bluetoothHandler;
-    private MessageHandler messageHandler;
+    private ConnectionHandler connectionHandler;
     private Button addButton;
 
-    public LEDController(Context context, BluetoothHandler handler) {
+    public LEDController(Context context, ConnectionHandler handler) {
         super(context);
         ledDb = new LedDBHandler(context);
-        bluetoothHandler = handler;
-        messageHandler = new MessageHandler();
+        connectionHandler = handler;
+        MessageHandler messageHandler = new MessageHandler();
         if (!MainActivity.debug)
-            bluetoothHandler.registerMessageHandler(messageHandler);
+            connectionHandler.registerMessageHandler(messageHandler);
         ledObserver = new LEDObserver(ledDb, this);
         leds = LEDFactory.getSavedLed(ledDb, ledObserver, messageHandler);
         ledGridAdapter = new LedGridAdapter(context, leds);
@@ -53,10 +52,15 @@ public class LEDController extends Controller {
         if (l.isActive()) command = l.getCommandOn();
         else command = l.getCommandOff();
         try {
-            bluetoothHandler.sendData(command);
+            connectionHandler.sendData(command);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void removeItem(LED item) {
+        leds.remove(item);
+        notifyChange();
     }
 
     @Override
@@ -88,17 +92,20 @@ public class LEDController extends Controller {
     }
 
     @Override
+    public void unregisterListeners() {
+        addButton.setOnClickListener(null);
+        ledGrid.setOnItemClickListener(null);
+        ledGrid.setOnItemLongClickListener(null);
+    }
+
+    @Override
     public View getViewItem(LayoutInflater inflater, View convertView, ViewGroup parent) {
         if (wrapper == null) {
             wrapper = inflater.inflate(R.layout.led_grid, parent, false);
             addButton = (Button) wrapper.findViewById(R.id.led_add_button);
-
             ledGrid = (GridView) wrapper.findViewById(R.id.led_grid);
             ledGrid.getLayoutParams().height = (int) ((Math.ceil(leds.size() / 2.0)) * Util.convertDpToPixel(125, context) + Util.convertDpToPixel(5, context)) ;
             ledGrid.setAdapter(ledGridAdapter);
-            ledObserver.setAdapter(ledGridAdapter);
-            ledObserver.setDisplayedLeds(leds);
-            registerListeners();
         }
 
         return wrapper;

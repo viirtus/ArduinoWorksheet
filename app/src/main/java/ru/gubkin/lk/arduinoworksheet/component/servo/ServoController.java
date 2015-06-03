@@ -1,16 +1,11 @@
 package ru.gubkin.lk.arduinoworksheet.component.servo;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import java.io.IOException;
@@ -18,7 +13,8 @@ import java.util.ArrayList;
 
 import ru.gubkin.lk.arduinoworksheet.R;
 import ru.gubkin.lk.arduinoworksheet.adapter.ServoGridAdapter;
-import ru.gubkin.lk.arduinoworksheet.bt.BluetoothHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
 import ru.gubkin.lk.arduinoworksheet.db.ServoDBHandler;
 import ru.gubkin.lk.arduinoworksheet.util.Util;
@@ -30,14 +26,14 @@ public class ServoController extends Controller {
     private View wrapper;
     private LinearLayout layout;
     private ArrayList<Servo> items;
-    private BluetoothHandler handler;
+    private ConnectionHandler handler;
     private ServoObserver observer;
     private ServoDBHandler dbHandler;
     private ServoGridAdapter adapter;
     private GridView gridView;
     private Button addButton;
     private LayoutInflater inflater;
-    public ServoController(Context context, BluetoothHandler handler) {
+    public ServoController(Context context, ConnectionHandler handler) {
         super(context);
         this.handler = handler;
         items = new ArrayList<>();
@@ -70,6 +66,11 @@ public class ServoController extends Controller {
     }
 
     @Override
+    public void unregisterListeners() {
+        addButton.setOnClickListener(null);
+    }
+
+    @Override
     public View getViewItem(LayoutInflater inflater, View convertView, ViewGroup parent) {
         this.inflater = inflater;
         if (wrapper == null) {
@@ -78,7 +79,6 @@ public class ServoController extends Controller {
             gridView = (GridView) wrapper.findViewById(R.id.servo_grid);
             gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(165, context));
             gridView.setAdapter(adapter);
-            registerListeners();
         }
         return wrapper;
     }

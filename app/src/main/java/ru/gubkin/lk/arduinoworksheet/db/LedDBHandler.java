@@ -87,8 +87,7 @@ public class LedDBHandler extends SQLiteOpenHelper {
         String query = "select " + KEY_ID + ", " + KEY_TITLE + ", " +
                 KEY_COLOR + ", " + KEY_STATE + ", " + KEY_DATA_KEY_ON + ", " + KEY_DATA_KEY_OFF + " from " +
                 TABLE_LED;
-        Cursor c = db.rawQuery(query, new String[]{});
-        return c;
+        return db.rawQuery(query, new String[]{});
     }
 
 
