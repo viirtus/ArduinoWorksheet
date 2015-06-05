@@ -109,6 +109,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void connectFallback() {
+        hideProgressDialog();
         showDevicesList();
     }
 

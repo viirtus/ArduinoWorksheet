@@ -16,9 +16,9 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ru.gubkin.lk.arduinoworksheet.adapter.DevicesAdapter;
-import ru.gubkin.lk.arduinoworksheet.component.DeviceListItem;
-import ru.gubkin.lk.arduinoworksheet.component.HeaderListItem;
 import ru.gubkin.lk.arduinoworksheet.component.ListItem;
+import ru.gubkin.lk.arduinoworksheet.component.list.device.DeviceListItem;
+import ru.gubkin.lk.arduinoworksheet.component.list.device.HeaderListItem;
 import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
 
 /**
@@ -56,7 +56,7 @@ public class SearchDevicesFragment extends Fragment {
         items = new ArrayList<>();
         items.add(new HeaderListItem("Bluetooth"));
         items.add(new HeaderListItem("TCP/IP"));
-        items.add(new DeviceListItem("Arduino home", "192.168.1.83:2501", ListItem.ItemType.ITEM_TCP));
+        items.add(new DeviceListItem("Arduino home", "169.254.75.8:2501", ListItem.ItemType.ITEM_TCP));
         btDeviceAdapter = new DevicesAdapter(getActivity(), items);
         list.setAdapter(btDeviceAdapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

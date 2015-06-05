@@ -1,8 +1,8 @@
 <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:tools="http://schemas.android.com/tools"--><!--android:id="@+id/fragment"--><!--android:name="ru.gubkin.lk.arduinoworksheet.MainActivityFragment"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--tools:layout="@layout/fragment_main" />-->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/main_toolbar"
@@ -13,6 +13,16 @@
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/main_toolbar" />
 
-</LinearLayout>
+    <com.shamanland.fab.FloatingActionButton
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_add_white_24dp" />
+</RelativeLayout>
