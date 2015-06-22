@@ -13,7 +13,15 @@ public class LED extends Observable implements MessageListener {
 
     private LedColors color;
 
+    /**
+     * id of row record in db
+     */
     private int id;
+
+    /**
+     * id of row record in device table
+     */
+    private int deviceId;
 
     private boolean isActive;
 
@@ -22,7 +30,8 @@ public class LED extends Observable implements MessageListener {
     private String commandOn;
     private String commandOff;
 
-    LED(LedColors c, boolean active, String title, int id, String commandOn, String commandOff) {
+    LED(int id, int deviceId, LedColors c, boolean active, String title, String commandOn, String commandOff) {
+        this.deviceId = deviceId;
         this.color = c;
         this.isActive = active;
         this.title = title;
@@ -31,40 +40,9 @@ public class LED extends Observable implements MessageListener {
         this.commandOff = commandOff;
     }
 
-    public enum LedColors {
-        RED(0, 0xffB71C1C, R.drawable.red_led),
-        GREEN(1, 0xff00695C, R.drawable.green_led),
-        BLUE(2, 0xff0277BD, R.drawable.blue_led);
-
-
-        private final int color;
-        private final int position;
-        private final int res;
-
-        LedColors(int position, int color, int res) {
-            this.position = position;
-            this.color = color;
-            this.res = res;
-        }
-
-        public int getColorId() {
-            return position;
-        }
-
-        public int getColor() {
-            return color;
-        }
-
-
-        public int getRes() {
-            return res;
-        }
-    }
-
     public int getImageResourse() {
         return color.getRes();
     }
-
 
     public void toggleState(boolean forceToggle) {
         isActive = !isActive;
@@ -80,19 +58,18 @@ public class LED extends Observable implements MessageListener {
         return isActive;
     }
 
-
     public LedColors getColor() {
         return color;
-    }
-
-    public void setColor(int id) {
-        setColor(LEDFactory.idToEnumColor(id));
     }
 
     private void setColor(LedColors color) {
         this.color = color;
         setChanged();
         notifyObservers(ComponentObserver.UPDATE_KEY);
+    }
+
+    public void setColor(int id) {
+        setColor(LEDFactory.idToEnumColor(id));
     }
 
     public String getTitle() {
@@ -138,6 +115,10 @@ public class LED extends Observable implements MessageListener {
         this.id = id;
     }
 
+    public int getDeviceId() {
+        return deviceId;
+    }
+
     public int getBackground() {
         if (isActive) {
             return color.getColor();
@@ -181,5 +162,36 @@ public class LED extends Observable implements MessageListener {
 
         return id == led.id;
     }
+
+    public enum LedColors {
+        RED(0, 0xffB71C1C, R.drawable.red_led),
+        GREEN(1, 0xff00695C, R.drawable.green_led),
+        BLUE(2, 0xff0277BD, R.drawable.blue_led);
+
+
+        private final int color;
+        private final int position;
+        private final int res;
+
+        LedColors(int position, int color, int res) {
+            this.position = position;
+            this.color = color;
+            this.res = res;
+        }
+
+        public int getColorId() {
+            return position;
+        }
+
+        public int getColor() {
+            return color;
+        }
+
+
+        public int getRes() {
+            return res;
+        }
+    }
+
 }
 

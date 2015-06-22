@@ -15,9 +15,9 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import ru.gubkin.lk.arduinoworksheet.adapter.DevicesAdapter;
-import ru.gubkin.lk.arduinoworksheet.component.list.device.DeviceListItem;
-import ru.gubkin.lk.arduinoworksheet.component.list.device.HeaderListItem;
+import ru.gubkin.lk.arduinoworksheet.component.list.device.DeviceController;
+import ru.gubkin.lk.arduinoworksheet.component.list.device.DeviceItem;
+import ru.gubkin.lk.arduinoworksheet.component.list.device.DeviceType;
 import ru.gubkin.lk.arduinoworksheet.component.list.device.ListItem;
 import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
 
@@ -25,9 +25,9 @@ import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
  * Created by Андрей on 07.05.2015.
  */
 public class SearchDevicesFragment extends Fragment {
-    private DevicesAdapter devicesAdapter;
     private ArrayList<ListItem> items;
     private ListView list;
+    private DeviceController controller;
     private final BroadcastReceiver btReceiver = new BroadcastReceiver(){
 
         @Override
@@ -35,9 +35,8 @@ public class SearchDevicesFragment extends Fragment {
             String action = intent.getAction();
             if (action.equals(BluetoothDevice.ACTION_FOUND)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                DeviceListItem listItem = new DeviceListItem(device.getName(), device.getAddress(), ListItem.ItemType.ITEM_BLUETOOTH);
-                items.add(1, listItem);
-                devicesAdapter.notifyDataSetChanged();
+                DeviceItem item = new DeviceItem(0, DeviceType.BLUETOOTH, device.getName(), device.getAddress());
+                controller.add(item);
             }
         }
     };
@@ -54,12 +53,9 @@ public class SearchDevicesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_search, container, false);
         list = (ListView) v.findViewById(R.id.bt_devices_lv);
-        items = new ArrayList<>();
-        items.add(new HeaderListItem("Bluetooth"));
-        items.add(new HeaderListItem("TCP/IP"));
-        items.add(new DeviceListItem("Arduino home", "169.254.65.77:2501", ListItem.ItemType.ITEM_TCP));
-        devicesAdapter = new DevicesAdapter(getActivity(), items);
-        list.setAdapter(devicesAdapter);
+        controller = new DeviceController(getActivity());
+
+        list.setAdapter(controller.getAdapter());
 
         return v;
     }
@@ -77,7 +73,7 @@ public class SearchDevicesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ListItem item = items.get(position);
-                if (item.getViewType() == ListItem.ItemType.ITEM_BLUETOOTH.ordinal()) {
+                if (item.getViewType() == ListItem.ItemType.DEVICE.ordinal()) {
                     ((MainActivity) getActivity()).tryToConnectBluetooth(item.getInfo());
                 } else {
                     ((MainActivity) getActivity()).tryToConnectTcp(item.getInfo());

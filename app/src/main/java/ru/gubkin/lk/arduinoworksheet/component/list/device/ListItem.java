@@ -16,6 +16,6 @@ public abstract class ListItem {
     public abstract View getView(LayoutInflater inflater, View convertView, ViewGroup parent);
 
     public enum ItemType {
-        HEADER, ITEM_BLUETOOTH, ITEM_TCP
+        HEADER, DEVICE
     }
 }

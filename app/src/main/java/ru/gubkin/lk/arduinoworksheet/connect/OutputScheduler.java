@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Created by Андрей on 11.06.2015.
+ * Created by ROOOT on 11.06.2015.
  */
 public class OutputScheduler extends Thread {
     private final static String TAG = "OUTPUT_THREAD";
@@ -26,7 +26,7 @@ public class OutputScheduler extends Thread {
         while (!isInterrupted()) {
             if (!schedule.isEmpty()) {
                 byte[] msgBuffer = schedule.getBytes();
-                Log.d(TAG, "***Отправляем данные: " + schedule + "***");
+                Log.d(TAG, "***SENDING: " + schedule + "***");
 
                 try {
                     outputStream.write(msgBuffer);

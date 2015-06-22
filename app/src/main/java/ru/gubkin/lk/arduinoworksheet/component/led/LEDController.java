@@ -12,35 +12,34 @@ import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.adapter.LedGridAdapter;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
 import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
-import ru.gubkin.lk.arduinoworksheet.db.LedDBHandler;
 import ru.gubkin.lk.arduinoworksheet.connect.MessageHandler;
+import ru.gubkin.lk.arduinoworksheet.db.LedDbHelper;
 
 /**
  * Created by root on 05.05.15.
  */
 public class LEDController extends Controller<LED> {
-    private static final String TITLE = "Бинарные Устройства";
+    private static final String TITLE = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
+    private static final int HEIGHT = 125;
     private LedGridAdapter adapter;
     private ArrayList<LED> items;
-    private LedDBHandler dbHandler;
+    private LedDbHelper dbHandler;
     private ConnectionHandler connectionHandler;
 
-    private static final int HEIGHT = 125;
-
-    public LEDController(Context context, ConnectionHandler handler) {
-        super(context, TITLE);
-        dbHandler = new LedDBHandler(context);
+    public LEDController(Context context, ConnectionHandler handler, int deviceId) {
+        super(context, TITLE, deviceId);
+        dbHandler = new LedDbHelper(context);
         connectionHandler = handler;
         MessageHandler messageHandler = new MessageHandler();
         if (!MainActivity.debug)
             connectionHandler.registerMessageHandler(messageHandler);
-        items = LEDFactory.getSavedLed(dbHandler, observer, messageHandler);
+        items = LEDFactory.getSavedLed(dbHandler, observer, messageHandler, deviceId);
         adapter = new LedGridAdapter(context, items);
     }
 
 
     @Override
-    public BaseAdapter getGridAdapter() {
+    public BaseAdapter getAdapter() {
         return adapter;
     }
 
@@ -49,7 +48,7 @@ public class LEDController extends Controller<LED> {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                items.add(LEDFactory.getNew(dbHandler, observer));
+                items.add(LEDFactory.getNew(dbHandler, observer, deviceId));
                 notifyChange();
             }
         });
@@ -88,13 +87,13 @@ public class LEDController extends Controller<LED> {
 
     @Override
     public void updateComponent(LED led) {
-        dbHandler.updateLed(led);
+        dbHandler.update(led);
         notifyChange();
     }
 
     @Override
     public void deleteComponent(LED led) {
-        dbHandler.deleteLed(led);
+        dbHandler.delete(led);
         items.remove(led);
         notifyChange();
     }

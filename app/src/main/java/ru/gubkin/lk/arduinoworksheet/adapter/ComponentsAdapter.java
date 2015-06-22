@@ -15,7 +15,7 @@ import ru.gubkin.lk.arduinoworksheet.R;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
 
 /**
- * Created by Андрей on 19.06.2015.
+ * Created by пїЅпїЅпїЅпїЅпїЅпїЅ on 19.06.2015.
  */
 public class ComponentsAdapter extends BaseAdapter {
 
@@ -42,12 +42,6 @@ public class ComponentsAdapter extends BaseAdapter {
         return 0;
     }
 
-    class ViewHolder {
-        GridView grid;
-        TextView title;
-        Button addButton;
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
@@ -70,12 +64,18 @@ public class ComponentsAdapter extends BaseAdapter {
         //by default
         holder.addButton.setVisibility(View.VISIBLE);
 
-        holder.grid.setAdapter(controller.getGridAdapter());
+        holder.grid.setAdapter(controller.getAdapter());
         holder.title.setText(controller.getTitle());
 
         controller.setGridView(holder.grid);
         controller.setAddButton(holder.addButton);
         controller.registerListeners();
         return null;
+    }
+
+    class ViewHolder {
+        GridView grid;
+        TextView title;
+        Button addButton;
     }
 }

@@ -18,7 +18,16 @@ public class Sensor extends Observable implements MessageListener {
     private String name;
     private String startPattern;
     private String endPattern;
+    /**
+     * id of row record in db
+     */
     private int id;
+
+    /**
+     * id of row record in device table
+     */
+    private int deviceId;
+
     private float maxValue;
     private float minValue;
     private float value;
@@ -27,7 +36,8 @@ public class Sensor extends Observable implements MessageListener {
     private TextView tv;
     private RelativeLayout layout;
 
-    public Sensor(String name, String startPattern, String endPattern, int id, float maxValue, float minValue) {
+    public Sensor(int id, int deviceId, String name, String startPattern, String endPattern, float maxValue, float minValue) {
+        this.deviceId = deviceId;
         this.name = name;
         this.startPattern = startPattern;
         this.endPattern = endPattern;
@@ -48,7 +58,6 @@ public class Sensor extends Observable implements MessageListener {
     }
 
     public String getStartPattern() {
-//        return "Value of potentiometer: ";
         return startPattern;
     }
 
@@ -60,6 +69,12 @@ public class Sensor extends Observable implements MessageListener {
 
     public String getEndPattern() {
         return endPattern;
+    }
+
+    public void setEndPattern(String endPattern) {
+        this.endPattern = endPattern;
+        setChanged();
+        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
     @Override
@@ -93,12 +108,6 @@ public class Sensor extends Observable implements MessageListener {
         } catch (NumberFormatException ignored) {
 
         }
-    }
-
-    public void setEndPattern(String endPattern) {
-        this.endPattern = endPattern;
-        setChanged();
-        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
     public int getId() {
@@ -175,6 +184,10 @@ public class Sensor extends Observable implements MessageListener {
     public void destroy() {
         setChanged();
         notifyObservers(ComponentObserver.DELETE_KEY);
+    }
+
+    public int getDeviceId() {
+        return deviceId;
     }
 
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")

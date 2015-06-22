@@ -14,20 +14,17 @@ public class DeviceListItem extends ListItem {
 
     private final String name;
     private final String info;
-    private ItemType type;
     private DeviceItem deviceItem;
 
-    public DeviceListItem(String name, String info, ItemType type) {
+    public DeviceListItem(String name, String info) {
         this.name = name;
         this.info = info;
-        this.type = type;
     }
 
-    public DeviceListItem(DeviceItem deviceItem, ItemType type) {
+    public DeviceListItem(DeviceItem deviceItem) {
         this.deviceItem = deviceItem;
         this.name = deviceItem.getName();
         this.info = deviceItem.getInfo();
-        this.type = type;
     }
 
     @Override
@@ -37,7 +34,7 @@ public class DeviceListItem extends ListItem {
 
     @Override
     public int getViewType() {
-        return type.ordinal();
+        return ItemType.DEVICE.ordinal();
     }
 
     @Override

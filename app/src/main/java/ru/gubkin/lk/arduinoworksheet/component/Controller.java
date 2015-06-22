@@ -1,35 +1,30 @@
 package ru.gubkin.lk.arduinoworksheet.component;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
 
 import java.util.Observable;
-import java.util.Observer;
 
-import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.util.Util;
 
 /**
  * Created by root on 05.05.15.
  */
 public abstract class Controller<T extends Observable> {
-    private String title;
+    protected int deviceId;
     protected Context context;
     protected GridView gridView;
     protected Button button;
-
     protected ComponentObserver observer;
+    private String title;
 
 
-    protected Controller(Context context, String title) {
+    protected Controller(Context context, String title, int deviceId) {
         this.context = context;
         this.title = title;
+        this.deviceId = deviceId;
         this.observer = new ComponentObserver(this);
     }
 
@@ -63,7 +58,7 @@ public abstract class Controller<T extends Observable> {
     /**
      * @return grid adapter for gridView
      */
-    public abstract BaseAdapter getGridAdapter();
+    public abstract BaseAdapter getAdapter();
 
     /**
      * Registering all necessary listeners to an UI components. Called when fragment fire onResume method

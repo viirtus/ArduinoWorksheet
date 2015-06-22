@@ -10,13 +10,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
- * Created by Андрей on 11.06.2015.
+ * Created by ROOOOOT on 11.06.2015.
  */
 public class MessageReceiver extends Thread {
     private final static String TAG = "RECEIVER_THREAD";
-    private ArrayList<Handler> handlers;
     private final Handler handler;
     private final InputStream inputStream;
+    private ArrayList<Handler> handlers;
 
     public MessageReceiver (Handler handler, InputStream inputStream) {
         this.handler = handler;

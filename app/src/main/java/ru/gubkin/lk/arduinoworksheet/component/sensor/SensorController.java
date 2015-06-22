@@ -12,36 +12,35 @@ import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.adapter.SensorGridAdapter;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
 import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
-import ru.gubkin.lk.arduinoworksheet.db.SensorDBHandler;
 import ru.gubkin.lk.arduinoworksheet.connect.MessageHandler;
+import ru.gubkin.lk.arduinoworksheet.db.SensorDbHelper;
 
 /**
  * Created by root on 11.05.15.
  */
 public class SensorController extends Controller<Sensor> {
-    private static final String TITLE = "Сенсоры";
+    private static final String TITLE = "Sensors";
+    private static final int HEIGHT = 125;
     private ArrayList<Sensor> items;
-    private SensorDBHandler dbHandler;
+    private SensorDbHelper dbHandler;
     private MessageHandler messageHandler;
     private SensorGridAdapter adapter;
 
-    private static final int HEIGHT = 125;
-
-    public SensorController(Context context, ConnectionHandler connectionHandler) {
-        super(context, TITLE);
-        dbHandler = new SensorDBHandler(context);
+    public SensorController(Context context, ConnectionHandler connectionHandler, int deviceId) {
+        super(context, TITLE, deviceId);
+        dbHandler = new SensorDbHelper(context);
         messageHandler = new MessageHandler();
 
         if (!MainActivity.debug) connectionHandler.registerMessageHandler(messageHandler);
 
-        items = SensorFactory.getSavedSensor(dbHandler, messageHandler, observer);
+        items = SensorFactory.getSavedSensor(dbHandler, messageHandler, observer, deviceId);
 
         adapter = new SensorGridAdapter(context, items);
 
     }
 
     @Override
-    public BaseAdapter getGridAdapter() {
+    public BaseAdapter getAdapter() {
         return adapter;
     }
 
@@ -50,7 +49,7 @@ public class SensorController extends Controller<Sensor> {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Sensor sensor = SensorFactory.getNew(dbHandler, messageHandler, observer);
+                Sensor sensor = SensorFactory.getNew(dbHandler, messageHandler, observer, deviceId);
                 items.add(sensor);
                 notifyChange();
             }
@@ -87,13 +86,13 @@ public class SensorController extends Controller<Sensor> {
 
     @Override
     public void updateComponent(Sensor sensor) {
-        dbHandler.updateSensor(sensor);
+        dbHandler.update(sensor);
         notifyChange();
     }
 
     @Override
     public void deleteComponent(Sensor sensor) {
-        dbHandler.deleteSensor(sensor);
+        dbHandler.delete(sensor);
         items.remove(sensor);
         notifyChange();
     }

@@ -4,7 +4,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * Created by Андрей on 19.06.2015.
+ * Created by пїЅпїЅпїЅпїЅпїЅпїЅ on 19.06.2015.
  */
 public class ComponentObserver<T> implements Observer {
 
