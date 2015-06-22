@@ -1,4 +1,4 @@
-package ru.gubkin.lk.arduinoworksheet.util;
+package ru.gubkin.lk.arduinoworksheet.connect;
 
 /**
  * Created by Андрей on 10.05.2015.

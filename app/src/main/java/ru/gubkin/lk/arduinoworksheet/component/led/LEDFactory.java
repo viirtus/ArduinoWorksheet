@@ -3,22 +3,23 @@ package ru.gubkin.lk.arduinoworksheet.component.led;
 import android.database.Cursor;
 
 import java.util.ArrayList;
+import java.util.Observer;
 
 import ru.gubkin.lk.arduinoworksheet.db.LedDBHandler;
-import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.MessageHandler;
 
 /**
  * Created by Андрей on 02.05.2015.
  */
 public class LEDFactory {
-    public static LED getNew(LedDBHandler db, LEDObserver observer) {
+    public static LED getNew(LedDBHandler db, Observer observer) {
         LED led = new LED(LED.LedColors.BLUE, false, "Новый LED", -1, "1:1", "1:0");
         db.insertNew(led);
         led.addObserver(observer);
         return led;
     }
 
-    public static ArrayList<LED> getSavedLed(LedDBHandler db, LEDObserver observer, MessageHandler messageHandler) {
+    public static ArrayList<LED> getSavedLed(LedDBHandler db, Observer observer, MessageHandler messageHandler) {
         ArrayList<LED> list = new ArrayList<>();
         Cursor cursor = db.getAllSavedLed();
         cursor.moveToFirst();
@@ -29,6 +30,7 @@ public class LEDFactory {
             String title = cursor.getString(db.getTitleIndex());
             String dataKeyOn = cursor.getString(db.getDataKeyOnIndex());
             String dataKeyOff = cursor.getString(db.getDataKeyOffIndex());
+
 
             LED led = new LED(
                     idToEnumColor(color),
@@ -46,18 +48,6 @@ public class LEDFactory {
         return list;
     }
 
-    protected static LED.LedColors stringToEnumColor(String color) {
-        switch (color) {
-            case "Red":
-                return LED.LedColors.RED;
-            case "Blue":
-                return LED.LedColors.BLUE;
-            case "Green":
-                return LED.LedColors.GREEN;
-            default:
-                return LED.LedColors.UNDEFINED;
-        }
-    }
 
     protected static LED.LedColors idToEnumColor(int id) {
         switch (id) {
@@ -68,7 +58,7 @@ public class LEDFactory {
             case 2:
                 return LED.LedColors.BLUE;
             default:
-                return LED.LedColors.UNDEFINED;
+                return LED.LedColors.RED;
         }
     }
 }

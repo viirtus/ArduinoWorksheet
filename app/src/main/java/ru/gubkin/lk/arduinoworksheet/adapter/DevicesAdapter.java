@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 
-import ru.gubkin.lk.arduinoworksheet.component.ListItem;
+import ru.gubkin.lk.arduinoworksheet.component.list.device.ListItem;
 
 /**
  * Created by Андрей on 07.05.2015.

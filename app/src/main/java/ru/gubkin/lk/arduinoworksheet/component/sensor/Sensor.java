@@ -5,16 +5,15 @@ import android.widget.TextView;
 
 import java.util.Observable;
 
+import ru.gubkin.lk.arduinoworksheet.component.ComponentObserver;
 import ru.gubkin.lk.arduinoworksheet.component.servo.RadialScaleView;
-import ru.gubkin.lk.arduinoworksheet.util.MessageListener;
+import ru.gubkin.lk.arduinoworksheet.connect.MessageListener;
 import ru.gubkin.lk.arduinoworksheet.util.Util;
 
 /**
  * Created by root on 11.05.15.
  */
 public class Sensor extends Observable implements MessageListener {
-    protected static final Integer DELETE_KEY = -1;
-    protected static final Integer UPDATE_KEY = -2;
 
     private String name;
     private String startPattern;
@@ -45,7 +44,7 @@ public class Sensor extends Observable implements MessageListener {
     public void setName(String name) {
         this.name = name;
         setChanged();
-        notifyObservers(UPDATE_KEY);
+        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
     public String getStartPattern() {
@@ -56,7 +55,7 @@ public class Sensor extends Observable implements MessageListener {
     public void setStartPattern(String startPattern) {
         this.startPattern = startPattern;
         setChanged();
-        notifyObservers(UPDATE_KEY);
+        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
     public String getEndPattern() {
@@ -99,7 +98,7 @@ public class Sensor extends Observable implements MessageListener {
     public void setEndPattern(String endPattern) {
         this.endPattern = endPattern;
         setChanged();
-        notifyObservers(UPDATE_KEY);
+        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
     public int getId() {
@@ -117,7 +116,7 @@ public class Sensor extends Observable implements MessageListener {
     public void setMaxValue(float maxValue) {
         this.maxValue = maxValue;
         setChanged();
-        notifyObservers(UPDATE_KEY);
+        notifyObservers(ComponentObserver.UPDATE_KEY);
         validateLayout();
     }
 
@@ -175,9 +174,10 @@ public class Sensor extends Observable implements MessageListener {
 
     public void destroy() {
         setChanged();
-        notifyObservers(DELETE_KEY);
+        notifyObservers(ComponentObserver.DELETE_KEY);
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;

@@ -8,6 +8,8 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.UUID;
 
+import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
+
 /**
  * Created by Андрей on 07.05.2015.
  */
@@ -19,7 +21,7 @@ class BluetoothConnectionThread extends Thread {
     private BluetoothDevice device;
     private BluetoothSocket socket;
 
-    public BluetoothConnectionThread (Handler handler, BluetoothDevice device) {
+    public BluetoothConnectionThread(Handler handler, BluetoothDevice device) {
         this.handler = handler;
         this.device = device;
 
@@ -29,7 +31,8 @@ class BluetoothConnectionThread extends Thread {
         try {
             // MY_UUID is the app's UUID string, also used by the server code
             tmp = device.createRfcommSocketToServiceRecord(_UUID);
-        } catch (IOException ignored) { }
+        } catch (IOException ignored) {
+        }
         socket = tmp;
 
     }
@@ -54,14 +57,13 @@ class BluetoothConnectionThread extends Thread {
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
-                    if (handler != null) {
-                        handler.obtainMessage(0, null).sendToTarget();
-                    }
                     Log.e(TAG, "Couldn't establish Bluetooth connection!");
                 }
             }
-            if (handler != null) {
+            if (socket.isConnected()) {
                 handler.obtainMessage(0, socket).sendToTarget();
+            } else {
+                handler.obtainMessage(ConnectionHandler.CONNECTION_EXCEPTION).sendToTarget();
             }
         }
     }

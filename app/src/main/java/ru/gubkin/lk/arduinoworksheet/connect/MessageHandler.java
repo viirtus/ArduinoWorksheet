@@ -1,14 +1,11 @@
-package ru.gubkin.lk.arduinoworksheet.util;
+package ru.gubkin.lk.arduinoworksheet.connect;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import ru.gubkin.lk.arduinoworksheet.component.sensor.Sensor;
 
 /**
  * Created by Андрей on 10.05.2015.

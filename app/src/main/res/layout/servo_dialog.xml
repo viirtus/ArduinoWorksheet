@@ -30,7 +30,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Название:"
+        android:text="@string/item_name"
         android:id="@+id/textView"
         android:layout_alignBottom="@+id/servo_title_et"
         android:layout_alignParentLeft="true"
@@ -42,7 +42,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Команда:"
+        android:text="@string/command"
         android:id="@+id/textView2"
         android:textSize="8pt"
         android:layout_alignBottom="@+id/led_command_on_et"
@@ -64,7 +64,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Максимум:"
+        android:text="@string/maximum"
         android:id="@+id/textView5"
         android:textSize="8pt"
         android:gravity="center_vertical"
@@ -86,7 +86,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Задержка:"
+        android:text="@string/delay"
         android:id="@+id/textView6"
         android:textSize="8pt"
         android:gravity="center_vertical"

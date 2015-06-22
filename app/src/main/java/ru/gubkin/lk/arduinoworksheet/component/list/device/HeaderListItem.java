@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import ru.gubkin.lk.arduinoworksheet.R;
-import ru.gubkin.lk.arduinoworksheet.component.ListItem;
 
 /**
  * Created by root on 03.06.15.

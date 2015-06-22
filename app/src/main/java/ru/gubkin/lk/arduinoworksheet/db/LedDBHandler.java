@@ -58,7 +58,7 @@ public class LedDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_TITLE, l.getTitle());
-        values.put(KEY_COLOR, l.getColor().getEngName());
+        values.put(KEY_COLOR, l.getColor().getColorId());
         values.put(KEY_STATE, l.isActive() ? 1 : 0);
         values.put(KEY_DATA_KEY_ON, l.getCommandOn());
         values.put(KEY_DATA_KEY_OFF, l.getCommandOff());

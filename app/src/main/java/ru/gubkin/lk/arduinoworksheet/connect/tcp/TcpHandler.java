@@ -8,7 +8,9 @@ import java.net.Socket;
 
 import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
-import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.MessageReceiver;
+import ru.gubkin.lk.arduinoworksheet.connect.OutputScheduler;
+import ru.gubkin.lk.arduinoworksheet.connect.MessageHandler;
 
 /**
  * Created by root on 03.06.15.
@@ -18,7 +20,6 @@ public class TcpHandler extends ConnectionHandler {
     private final String ip;
     private final int port;
     private Socket socket;
-    private TcpReceiveThread receiveThread;
 
     public TcpHandler(MainActivity activity, String ip, int port) {
         super(Looper.getMainLooper(), activity);
@@ -32,21 +33,28 @@ public class TcpHandler extends ConnectionHandler {
 
     @Override
     public void handleMessage(Message msg) {
+        if (msg.what != 0) {
+            fallback(msg.what);
+            return;
+        }
+
         if (msg.obj != null) {
             socket = (Socket) msg.obj;
             try {
-                receiveThread = new TcpReceiveThread(socket);
+                receiveThread = new MessageReceiver(this, socket.getInputStream());
+                outputThread = new OutputScheduler(this, socket.getOutputStream());
                 receiveThread.start();
+                outputThread.start();
                 activity.startMainFragment();
             } catch (IOException e) {
-                activity.connectFallback();
+                fallback(0);
             }
         }
     }
 
     @Override
-    public void sendData(String data) throws IOException {
-        receiveThread.sendData(data);
+    public void sendData(String data){
+        outputThread.setSchedule(data);
     }
 
     @Override

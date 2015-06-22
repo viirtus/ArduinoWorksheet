@@ -1,4 +1,4 @@
-package ru.gubkin.lk.arduinoworksheet.component;
+package ru.gubkin.lk.arduinoworksheet.component.list.device;
 
 import android.view.LayoutInflater;
 import android.view.View;

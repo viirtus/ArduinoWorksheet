@@ -9,22 +9,21 @@ import android.os.Message;
 import android.util.Log;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import ru.gubkin.lk.arduinoworksheet.MainActivity;
 import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
-import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.MessageReceiver;
+import ru.gubkin.lk.arduinoworksheet.connect.OutputScheduler;
+import ru.gubkin.lk.arduinoworksheet.connect.MessageHandler;
 
 /**
  * Created by root on 06.05.15.
  */
 public class BluetoothHandler extends ConnectionHandler {
-    private static final UUID _UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final static String TAG = "BT_HANDLER";
     private final static int REQUEST_ENABLE_BT = 0;
     private String mac;
     private BluetoothAdapter adapter;
-    private BluetoothThread thread;
     private BluetoothConnectionThread threadConnection;
     private String lastConnect;
 
@@ -75,11 +74,18 @@ public class BluetoothHandler extends ConnectionHandler {
 
     @Override
     public void handleMessage(Message msg) {
+        if (msg.what != 0) {
+            fallback(msg.what);
+            return;
+        }
         if (msg.obj != null) {
             BluetoothSocket socket = (BluetoothSocket) msg.obj;
             try {
-                thread = new BluetoothThread(socket);
-                thread.start();
+                receiveThread = new MessageReceiver(this, socket.getInputStream());
+                outputThread = new OutputScheduler(this, socket.getOutputStream());
+                receiveThread.start();
+                outputThread.start();
+
                 activity.startMainFragment();
                 threadConnection.interrupt();
             } catch (IOException e) {
@@ -90,17 +96,12 @@ public class BluetoothHandler extends ConnectionHandler {
 
     @Override
     public void registerMessageHandler(MessageHandler handler) {
-        thread.registerHandler(handler);
+        receiveThread.registerHandler(handler);
     }
 
     @Override
-    public void sendData(String message) throws IOException {
-        if (thread != null) {
-            thread.sendData(message);
-        } else {
-            mac = lastConnect;
-            connectRequest();
-        }
+    public void sendData(String message){
+        outputThread.setSchedule(message);
     }
 
 

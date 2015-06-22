@@ -16,17 +16,18 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ru.gubkin.lk.arduinoworksheet.adapter.DevicesAdapter;
-import ru.gubkin.lk.arduinoworksheet.component.ListItem;
 import ru.gubkin.lk.arduinoworksheet.component.list.device.DeviceListItem;
 import ru.gubkin.lk.arduinoworksheet.component.list.device.HeaderListItem;
+import ru.gubkin.lk.arduinoworksheet.component.list.device.ListItem;
 import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
 
 /**
  * Created by Андрей on 07.05.2015.
  */
 public class SearchDevicesFragment extends Fragment {
-    private DevicesAdapter btDeviceAdapter;
+    private DevicesAdapter devicesAdapter;
     private ArrayList<ListItem> items;
+    private ListView list;
     private final BroadcastReceiver btReceiver = new BroadcastReceiver(){
 
         @Override
@@ -36,7 +37,7 @@ public class SearchDevicesFragment extends Fragment {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 DeviceListItem listItem = new DeviceListItem(device.getName(), device.getAddress(), ListItem.ItemType.ITEM_BLUETOOTH);
                 items.add(1, listItem);
-                btDeviceAdapter.notifyDataSetChanged();
+                devicesAdapter.notifyDataSetChanged();
             }
         }
     };
@@ -52,25 +53,14 @@ public class SearchDevicesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_search, container, false);
-        ListView list = (ListView) v.findViewById(R.id.bt_devices_lv);
+        list = (ListView) v.findViewById(R.id.bt_devices_lv);
         items = new ArrayList<>();
         items.add(new HeaderListItem("Bluetooth"));
         items.add(new HeaderListItem("TCP/IP"));
-        items.add(new DeviceListItem("Arduino home", "169.254.75.8:2501", ListItem.ItemType.ITEM_TCP));
-        btDeviceAdapter = new DevicesAdapter(getActivity(), items);
-        list.setAdapter(btDeviceAdapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ListItem item = items.get(position);
-                if (item.getViewType() == ListItem.ItemType.ITEM_BLUETOOTH.ordinal()) {
-                    ((MainActivity) getActivity()).tryToConnectBluetooth(item.getInfo());
-                } else {
-                    ((MainActivity) getActivity()).tryToConnectTcp(item.getInfo());
-                }
-//                getFragmentManager().beginTransaction().remove(me).commit();
-            }
-        });
+        items.add(new DeviceListItem("Arduino home", "169.254.65.77:2501", ListItem.ItemType.ITEM_TCP));
+        devicesAdapter = new DevicesAdapter(getActivity(), items);
+        list.setAdapter(devicesAdapter);
+
         return v;
     }
 
@@ -83,11 +73,27 @@ public class SearchDevicesFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListItem item = items.get(position);
+                if (item.getViewType() == ListItem.ItemType.ITEM_BLUETOOTH.ordinal()) {
+                    ((MainActivity) getActivity()).tryToConnectBluetooth(item.getInfo());
+                } else {
+                    ((MainActivity) getActivity()).tryToConnectTcp(item.getInfo());
+                }
+//                getFragmentManager().beginTransaction().remove(me).commit();
+            }
+        });
+
         BluetoothHandler.startDiscovery((MainActivity) getActivity());
     }
     @Override
     public void onDestroy(){
         super.onDestroy();
+
+        list.setOnItemClickListener(null);
+
         getActivity().unregisterReceiver(btReceiver);
     }
 

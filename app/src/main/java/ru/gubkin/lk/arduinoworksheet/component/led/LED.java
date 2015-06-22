@@ -1,22 +1,15 @@
 package ru.gubkin.lk.arduinoworksheet.component.led;
 
-import android.util.Log;
-
 import java.util.Observable;
 
 import ru.gubkin.lk.arduinoworksheet.R;
-import ru.gubkin.lk.arduinoworksheet.util.MessageListener;
+import ru.gubkin.lk.arduinoworksheet.component.ComponentObserver;
+import ru.gubkin.lk.arduinoworksheet.connect.MessageListener;
 
 /**
  * Created by Андрей on 01.05.2015.
  */
 public class LED extends Observable implements MessageListener {
-    protected static final Integer DELETE_KEY = -1;
-    protected static final Integer UPDATE_KEY = -2;
-    protected static final Integer TOGGLE_KEY = -3;
-
-    static final String LED_ON = "1";
-    static final String LED_OFF = "0";
 
     private LedColors color;
 
@@ -29,10 +22,6 @@ public class LED extends Observable implements MessageListener {
     private String commandOn;
     private String commandOff;
 
-    LED() {
-        this(LedColors.UNDEFINED, true, "Добавить", -1, "NULL", "NULL");
-    }
-
     LED(LedColors c, boolean active, String title, int id, String commandOn, String commandOff) {
         this.color = c;
         this.isActive = active;
@@ -43,30 +32,19 @@ public class LED extends Observable implements MessageListener {
     }
 
     public enum LedColors {
-        UNDEFINED("add_new", "Добавить", -1, 0),
-        RED("Red", "Красный", 0, 0xffB71C1C),
-        GREEN("Green", "Зеленый", 1, 0xff00695C),
-        BLUE("Blue", "Синий", 2, 0xff0277BD);
+        RED(0, 0xffB71C1C, R.drawable.red_led),
+        GREEN(1, 0xff00695C, R.drawable.green_led),
+        BLUE(2, 0xff0277BD, R.drawable.blue_led);
 
-        private final String engName;
-        private final String ruName;
 
         private final int color;
         private final int position;
+        private final int res;
 
-        LedColors(String engName, String ruName, int position, int color) {
-            this.engName = engName;
-            this.ruName = ruName;
+        LedColors(int position, int color, int res) {
             this.position = position;
             this.color = color;
-        }
-
-        public String getEngName() {
-            return engName;
-        }
-
-        public String getRuName() {
-            return ruName;
+            this.res = res;
         }
 
         public int getColorId() {
@@ -78,24 +56,13 @@ public class LED extends Observable implements MessageListener {
         }
 
 
+        public int getRes() {
+            return res;
+        }
     }
 
     public int getImageResourse() {
-        if (color != LedColors.UNDEFINED) {
-            if (isActive) {
-                switch (color) {
-                    case RED:
-                        return R.drawable.red_led;
-                    case GREEN:
-                        return R.drawable.green_led;
-                    case BLUE:
-                        return R.drawable.blue_led;
-                }
-            } else {
-                return R.drawable.white_led;
-            }
-        }
-        return R.drawable.ic_add_circle_outline;
+        return color.getRes();
     }
 
 
@@ -103,9 +70,9 @@ public class LED extends Observable implements MessageListener {
         isActive = !isActive;
         setChanged();
         if (forceToggle) {
-            notifyObservers(TOGGLE_KEY);
+            notifyObservers(ComponentObserver.PROCESS_KEY);
         } else {
-            notifyObservers(UPDATE_KEY);
+            notifyObservers(ComponentObserver.UPDATE_KEY);
         }
     }
 
@@ -125,7 +92,7 @@ public class LED extends Observable implements MessageListener {
     private void setColor(LedColors color) {
         this.color = color;
         setChanged();
-        notifyObservers(UPDATE_KEY);
+        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
     public String getTitle() {
@@ -135,7 +102,7 @@ public class LED extends Observable implements MessageListener {
     public void setTitle(String title) {
         this.title = title;
         setChanged();
-        notifyObservers(UPDATE_KEY);
+        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
     public String getCommandOn() {
@@ -145,7 +112,7 @@ public class LED extends Observable implements MessageListener {
     public void setCommandOn(String commandOn) {
         this.commandOn = commandOn;
         setChanged();
-        notifyObservers(UPDATE_KEY);
+        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
     public String getCommandOff() {
@@ -155,12 +122,12 @@ public class LED extends Observable implements MessageListener {
     public void setCommandOff(String commandOff) {
         this.commandOff = commandOff;
         setChanged();
-        notifyObservers(UPDATE_KEY);
+        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
     public void destroy() {
         setChanged();
-        notifyObservers(DELETE_KEY);
+        notifyObservers(ComponentObserver.DELETE_KEY);
     }
 
     public int getId() {
@@ -194,6 +161,8 @@ public class LED extends Observable implements MessageListener {
         if (message.equals(commandOn)) {
             isActive = true;
             setChanged();
+
+            //We need just adapter refresh
             notifyObservers(-777);
         }
         if (message.equals(commandOff)) {
@@ -203,6 +172,7 @@ public class LED extends Observable implements MessageListener {
         }
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

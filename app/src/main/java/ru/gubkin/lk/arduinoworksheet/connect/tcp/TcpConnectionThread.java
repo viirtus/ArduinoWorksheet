@@ -5,6 +5,8 @@ import android.os.Handler;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
+
 /**
  * Created by root on 03.06.15.
  */
@@ -26,7 +28,7 @@ public class TcpConnectionThread extends Thread {
             Socket socket = new Socket(inetAddress, port);
             handler.obtainMessage(0, socket).sendToTarget();
         } catch (Exception e) {
-            handler.obtainMessage(0, null).sendToTarget();
+            handler.obtainMessage(ConnectionHandler.CONNECTION_EXCEPTION).sendToTarget();
         }
     }
 }

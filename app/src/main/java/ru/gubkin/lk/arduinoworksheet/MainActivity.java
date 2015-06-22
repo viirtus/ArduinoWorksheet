@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
 import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
@@ -24,32 +25,23 @@ public class MainActivity extends ActionBarActivity {
     private static final String BUNDLE_NT_HANDLER = "bt_handler";
     public static boolean debug = false;
     String makerStudio = "98:D3:31:50:4A:1B";
-    private Context context;
+    private Context applicationContext;
     private Toolbar toolbar;
     //The BroadcastReceiver that listens for bluetooth broadcasts
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-            }
             if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
-                checkDeviceState();
                 showDevicesList();
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-                checkDeviceState();
                 showDevicesList();
             }
         }
     };
     private FrameLayout mainFrame;
-    private String connectedDevice;
     private ConnectionHandler handler;
     private ProgressDialog progressDialog;
-    private MainActivityFragment componentsFragment;
-    private int location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +59,10 @@ public class MainActivity extends ActionBarActivity {
             showDevicesList();
         }
 //        tryToConnectBluetooth(null);
-        context = this;
+        applicationContext = getApplicationContext();
 
-        IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
         IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
         IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        this.registerReceiver(mReceiver, filter1);
         this.registerReceiver(mReceiver, filter2);
         this.registerReceiver(mReceiver, filter3);
     }
@@ -82,7 +72,6 @@ public class MainActivity extends ActionBarActivity {
             showProgressDialog();
             handler = new BluetoothHandler(this, device);
             handler.connectRequest();
-            connectedDevice = device;
         }
     }
 
@@ -93,7 +82,6 @@ public class MainActivity extends ActionBarActivity {
         int port = Integer.parseInt(info_[1]);
         handler = new TcpHandler(this, ip, port);
         handler.connectRequest();
-        connectedDevice = info;
     }
 
     public void startMainFragment() {
@@ -101,14 +89,16 @@ public class MainActivity extends ActionBarActivity {
         if (!debug) {
             toolbar.setTitle("");
         }
-        componentsFragment = new MainActivityFragment(handler);
+        MainActivityFragment componentsFragment = new MainActivityFragment();
+        componentsFragment.setHandler(handler);
 
         FragmentManager fragmentManager = getFragmentManager();
 
         fragmentManager.beginTransaction().replace(R.id.content_frame, componentsFragment).commit();
     }
 
-    public void connectFallback() {
+    public void connectionFallback(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         hideProgressDialog();
         showDevicesList();
     }
@@ -124,12 +114,6 @@ public class MainActivity extends ActionBarActivity {
         fragmentManager.beginTransaction().replace(R.id.content_frame, searchFragment).addToBackStack(null).commit();
     }
 
-
-    public void checkDeviceState() {
-        String deviceKey = "DEVICE";
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        String alreadyConnectedId = preferences.getString(deviceKey, "");
-    }
 
     @Override
     public void onResume() {

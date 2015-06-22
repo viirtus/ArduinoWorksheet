@@ -2,49 +2,37 @@ package ru.gubkin.lk.arduinoworksheet.component.sensor;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.GridView;
-import android.widget.LinearLayout;
+import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 
 import ru.gubkin.lk.arduinoworksheet.MainActivity;
-import ru.gubkin.lk.arduinoworksheet.R;
 import ru.gubkin.lk.arduinoworksheet.adapter.SensorGridAdapter;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
 import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
 import ru.gubkin.lk.arduinoworksheet.db.SensorDBHandler;
-import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
-import ru.gubkin.lk.arduinoworksheet.util.Util;
+import ru.gubkin.lk.arduinoworksheet.connect.MessageHandler;
 
 /**
  * Created by root on 11.05.15.
  */
-public class SensorController extends Controller {
+public class SensorController extends Controller<Sensor> {
+    private static final String TITLE = "Сенсоры";
     private ArrayList<Sensor> items;
-    private View wrapper;
-    private GridView gridView;
-    private Button addButton;
-    private LayoutInflater inflater;
     private SensorDBHandler dbHandler;
-    private SensorObserver observer;
     private MessageHandler messageHandler;
     private SensorGridAdapter adapter;
-    private Button button;
-    private LinearLayout layout;
+
+    private static final int HEIGHT = 125;
 
     public SensorController(Context context, ConnectionHandler connectionHandler) {
-        super(context);
+        super(context, TITLE);
         dbHandler = new SensorDBHandler(context);
-        observer = new SensorObserver(dbHandler, this);
         messageHandler = new MessageHandler();
 
-        if (!MainActivity.debug)
-        connectionHandler.registerMessageHandler(messageHandler);
+        if (!MainActivity.debug) connectionHandler.registerMessageHandler(messageHandler);
 
         items = SensorFactory.getSavedSensor(dbHandler, messageHandler, observer);
 
@@ -53,8 +41,13 @@ public class SensorController extends Controller {
     }
 
     @Override
+    public BaseAdapter getGridAdapter() {
+        return adapter;
+    }
+
+    @Override
     public void registerListeners() {
-        addButton.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Sensor sensor = SensorFactory.getNew(dbHandler, messageHandler, observer);
@@ -81,32 +74,33 @@ public class SensorController extends Controller {
 
     @Override
     public void unregisterListeners() {
-        addButton.setOnClickListener(null);
+        button.setOnClickListener(null);
         gridView.setOnItemClickListener(null);
         gridView.setOnItemLongClickListener(null);
     }
 
-    @Override
-    public View getViewItem(LayoutInflater inflater, View convertView, ViewGroup parent) {
-        if (wrapper == null) {
-            this.inflater = inflater;
-            wrapper = inflater.inflate(R.layout.sensor_grid, parent, false);
-            addButton = (Button) wrapper.findViewById(R.id.sensor_add_button);
-            gridView = (GridView) wrapper.findViewById(R.id.sensor_grid);
-            gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(125, context) + Util.convertDpToPixel(5, context));
-            gridView.setAdapter(adapter);
-            registerListeners();
-        }
-        return wrapper;
-    }
 
     public void notifyChange() {
         adapter.notifyDataSetChanged();
-        gridView.getLayoutParams().height = (int) (Math.ceil(items.size() / 2.0) * Util.convertDpToPixel(125, context) + Util.convertDpToPixel(5, context));
+        initHeight(HEIGHT, 2, items.size());
     }
 
-    public void deleteSensor(Sensor sensor) {
+    @Override
+    public void updateComponent(Sensor sensor) {
+        dbHandler.updateSensor(sensor);
+        notifyChange();
+    }
+
+    @Override
+    public void deleteComponent(Sensor sensor) {
+        dbHandler.deleteSensor(sensor);
         items.remove(sensor);
+        notifyChange();
+    }
+
+    @Override
+    public void processComponent(Sensor sensor) {
+
     }
 
 

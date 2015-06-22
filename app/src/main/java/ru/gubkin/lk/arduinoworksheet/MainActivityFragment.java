@@ -10,10 +10,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import ru.gubkin.lk.arduinoworksheet.adapter.GroupAdapter;
+import ru.gubkin.lk.arduinoworksheet.adapter.ComponentsAdapter;
 import ru.gubkin.lk.arduinoworksheet.component.Controller;
-import ru.gubkin.lk.arduinoworksheet.component.GroupItem;
-import ru.gubkin.lk.arduinoworksheet.component.ListItem;
 import ru.gubkin.lk.arduinoworksheet.component.led.LEDController;
 import ru.gubkin.lk.arduinoworksheet.component.sensor.SensorController;
 import ru.gubkin.lk.arduinoworksheet.component.servo.ServoController;
@@ -24,41 +22,30 @@ import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
-    private Context context;
     private ConnectionHandler handler;
     private ArrayList<Controller> controllers;
-    public MainActivityFragment(ConnectionHandler handler) {
-        this.handler = handler;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        context = getActivity();
+        Context context = getActivity();
         View v = inflater.inflate(R.layout.fragment_main, container, false);
 
         ListView groupList = (ListView) v.findViewById(R.id.group_list);
-        ArrayList<ListItem> items = new ArrayList<>();
+
         LEDController ledController = new LEDController(context, handler);
-
-        items.add(new GroupItem(ledController));
-
         ServoController servoController = new ServoController(context, handler);
 
-        items.add(new GroupItem(servoController));
-
         SensorController sensorController = new SensorController(context, handler);
-        items.add(new GroupItem(sensorController));
-
-        groupList.setWillNotDraw(false);
-
-        GroupAdapter adapter = new GroupAdapter(context, items);
-        groupList.setAdapter(adapter);
 
         controllers = new ArrayList<>();
         controllers.add(ledController);
         controllers.add(servoController);
         controllers.add(sensorController);
+
+        ComponentsAdapter componentsAdapter = new ComponentsAdapter(context, controllers);
+        groupList.setAdapter(componentsAdapter);
+
         return v;
     }
 
@@ -69,7 +56,7 @@ public class MainActivityFragment extends Fragment {
         for (Controller controller: controllers) {
             try {
                 controller.registerListeners();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
     }
@@ -81,5 +68,9 @@ public class MainActivityFragment extends Fragment {
         for (Controller controller: controllers) {
             controller.unregisterListeners();
         }
+    }
+
+    public void setHandler(ConnectionHandler handler) {
+        this.handler = handler;
     }
 }

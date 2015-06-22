@@ -3,15 +3,16 @@ package ru.gubkin.lk.arduinoworksheet.component.sensor;
 import android.database.Cursor;
 
 import java.util.ArrayList;
+import java.util.Observer;
 
 import ru.gubkin.lk.arduinoworksheet.db.SensorDBHandler;
-import ru.gubkin.lk.arduinoworksheet.util.MessageHandler;
+import ru.gubkin.lk.arduinoworksheet.connect.MessageHandler;
 
 /**
  * Created by root on 11.05.15.
  */
 public class SensorFactory {
-    public static Sensor getNew(SensorDBHandler db, MessageHandler handler, SensorObserver observer){
+    public static Sensor getNew(SensorDBHandler db, MessageHandler handler, Observer observer){
         Sensor sensor = new Sensor("Сенсор", "", "", 0, 1024, 0);
         db.insertNew(sensor);
         sensor.addObserver(observer);
@@ -20,7 +21,7 @@ public class SensorFactory {
         return sensor;
     }
 
-    public static ArrayList<Sensor> getSavedSensor(SensorDBHandler db, MessageHandler handler, SensorObserver observer) {
+    public static ArrayList<Sensor> getSavedSensor(SensorDBHandler db, MessageHandler handler, Observer observer) {
         ArrayList<Sensor> list = new ArrayList<>();
         Cursor cursor = db.getAllSavedLed();
         cursor.moveToFirst();

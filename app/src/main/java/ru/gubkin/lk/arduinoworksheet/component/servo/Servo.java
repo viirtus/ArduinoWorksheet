@@ -1,27 +1,15 @@
 package ru.gubkin.lk.arduinoworksheet.component.servo;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Canvas;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 
 import java.util.Observable;
 
-import ru.gubkin.lk.arduinoworksheet.MainActivity;
-import ru.gubkin.lk.arduinoworksheet.R;
+import ru.gubkin.lk.arduinoworksheet.component.ComponentObserver;
 
 /**
  * Created by Андрей on 08.05.2015.
  */
 public class Servo extends Observable {
-    protected static final Integer DELETE_KEY = -1;
-    protected static final Integer UPDATE_KEY = -2;
-    protected static final Integer CONTROL_KEY = -3;
 
     private int id;
 
@@ -44,7 +32,7 @@ public class Servo extends Observable {
     private Button btnDwn;
 
 
-    public Servo (String name, String command, int maxValue, int value, int delay) {
+    public Servo(String name, String command, int maxValue, int value, int delay) {
         this.name = name;
         this.command = command;
         this.maxValue = maxValue;
@@ -83,6 +71,7 @@ public class Servo extends Observable {
     public int getId() {
         return id;
     }
+
     public int getDelay() {
         return delay;
     }
@@ -90,7 +79,7 @@ public class Servo extends Observable {
     public void setDelay(int delay) {
         this.delay = delay;
         setChanged();
-        notifyObservers(UPDATE_KEY);
+        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
 
@@ -99,36 +88,37 @@ public class Servo extends Observable {
         btnUp.setOnClickListener(null);
     }
 
-    public void setValue (int value) {
+    public void setValue(int value) {
 
         this.value = value;
         setChanged();
-        notifyObservers(CONTROL_KEY);
+        notifyObservers(ComponentObserver.PROCESS_KEY);
     }
 
     public void setName(String name) {
         this.name = name;
         setChanged();
-        notifyObservers(UPDATE_KEY);
+        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
     public void setCommand(String command) {
         this.command = command;
         setChanged();
-        notifyObservers(UPDATE_KEY);
+        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
     public void setMaxValue(int maxValue) {
         this.maxValue = maxValue;
         setChanged();
-        notifyObservers(UPDATE_KEY);
+        notifyObservers(ComponentObserver.UPDATE_KEY);
     }
 
     public void destroy() {
         setChanged();
-        notifyObservers(DELETE_KEY);
+        notifyObservers(ComponentObserver.DELETE_KEY);
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
