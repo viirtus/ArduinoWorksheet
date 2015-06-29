@@ -13,6 +13,9 @@ public abstract class ListItem {
 
     public abstract int getViewType();
 
+    public abstract DeviceItem getDeviceItem();
+
+
     public abstract View getView(LayoutInflater inflater, View convertView, ViewGroup parent);
 
     public enum ItemType {

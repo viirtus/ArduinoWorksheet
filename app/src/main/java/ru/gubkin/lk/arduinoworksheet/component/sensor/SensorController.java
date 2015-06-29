@@ -38,7 +38,10 @@ public class SensorController extends Controller<Sensor> {
         adapter = new SensorGridAdapter(context, items);
 
     }
-
+    @Override
+    public boolean isEmpty() {
+        return items.size() == 0;
+    }
     @Override
     public BaseAdapter getAdapter() {
         return adapter;
@@ -81,7 +84,7 @@ public class SensorController extends Controller<Sensor> {
 
     public void notifyChange() {
         adapter.notifyDataSetChanged();
-        initHeight(HEIGHT, 2, items.size());
+        validateView(HEIGHT, 2, items.size());
     }
 
     @Override

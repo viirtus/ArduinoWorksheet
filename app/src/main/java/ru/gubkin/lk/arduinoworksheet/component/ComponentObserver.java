@@ -3,9 +3,6 @@ package ru.gubkin.lk.arduinoworksheet.component;
 import java.util.Observable;
 import java.util.Observer;
 
-/**
- * Created by ������ on 19.06.2015.
- */
 public class ComponentObserver<T> implements Observer {
 
     public static final Integer PROCESS_KEY = 2;

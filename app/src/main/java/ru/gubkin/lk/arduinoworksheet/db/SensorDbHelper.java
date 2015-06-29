@@ -29,6 +29,7 @@ public class SensorDbHelper extends DbHelper<Sensor> {
                     + KEY_TITLE + " TEXT,"
                     + KEY_MAX_VALUE + " INTEGER,"
                     + KEY_MIN_VALUE + " INTEGER,"
+                    + KEY_DEVICE_ID + " INTEGER,"
                     + KEY_START_PATTERN + " TEXT,"
                     + KEY_END_PATTERN + " TEXT" + ")";
 

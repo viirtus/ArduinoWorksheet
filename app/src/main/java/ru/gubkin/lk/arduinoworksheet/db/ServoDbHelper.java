@@ -28,6 +28,7 @@ public class ServoDbHelper extends DbHelper<Servo> {
                     + KEY_ID + " INTEGER PRIMARY KEY,"
                     + KEY_TITLE + " TEXT,"
                     + KEY_STATE + " INTEGER,"
+                    + KEY_DEVICE_ID + " INTEGER,"
                     + KEY_MAX_VALUE + " INTEGER,"
                     + KEY_DELAY + " INTEGER,"
                     + KEY_DATA_KEY + " TEXT" + ")";

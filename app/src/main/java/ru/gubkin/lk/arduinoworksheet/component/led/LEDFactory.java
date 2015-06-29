@@ -59,7 +59,7 @@ public class LEDFactory {
             case 2:
                 return LED.LedColors.BLUE;
             default:
-                return LED.LedColors.RED;
+                return LED.LedColors.OFF;
         }
     }
 }

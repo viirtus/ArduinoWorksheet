@@ -28,6 +28,11 @@ public class HeaderListItem extends ListItem {
     }
 
     @Override
+    public DeviceItem getDeviceItem() {
+        return null;
+    }
+
+    @Override
     public View getView(LayoutInflater inflater, View convertView, ViewGroup parent) {
         View v = inflater.inflate(R.layout.device_header_item, parent, false);
         TextView header = (TextView) v.findViewById(R.id.header_tv);

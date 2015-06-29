@@ -30,7 +30,10 @@ public class ServoController extends Controller<Servo> {
         items = ServoFactory.getSavedServo(dbHandler, observer, deviceId);
         adapter = new ServoGridAdapter(context, items);
     }
-
+    @Override
+    public boolean isEmpty() {
+        return items.size() == 0;
+    }
     @Override
     public BaseAdapter getAdapter() {
         return adapter;
@@ -56,7 +59,7 @@ public class ServoController extends Controller<Servo> {
 
     public void notifyChange() {
         adapter.notifyDataSetChanged();
-        initHeight(HEIGHT, 2, items.size());
+        validateView(HEIGHT, 2, items.size());
     }
 
     @Override
@@ -69,6 +72,7 @@ public class ServoController extends Controller<Servo> {
     public void deleteComponent(Servo servo) {
         dbHandler.delete(servo);
         items.remove(servo);
+        notifyChange();
     }
 
     @Override

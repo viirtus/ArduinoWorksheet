@@ -18,6 +18,21 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:id="@+id/empty_holder"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/linearLayout">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Здесь пока ничего нет :("
+                    />
+
+            </RelativeLayout>
             <GridView
                 android:id="@+id/grid"
                 android:layout_width="match_parent"

@@ -12,6 +12,8 @@ import ru.gubkin.lk.arduinoworksheet.db.DeviceDbHelper;
  */
 public class DeviceFactory {
 
+
+
     public static ArrayList<DeviceItem> getAll(DeviceDbHelper db, Observer observer) {
         ArrayList<DeviceItem> list = new ArrayList<>();
         Cursor cursor = db.getAll(0);

@@ -60,7 +60,7 @@ public class LedGridAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         LED led = items.get(position);
-        holder.image.setImageResource(led.getImageResourse());
+        holder.image.setImageResource(led.getImageResource());
         holder.title.setText(led.getTitle());
         holder.layout.setBackgroundColor(led.getBackground());
         return convertView;

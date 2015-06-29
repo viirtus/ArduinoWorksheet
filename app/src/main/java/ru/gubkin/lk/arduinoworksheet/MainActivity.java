@@ -13,8 +13,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import com.shamanland.fab.FloatingActionButton;
 
 import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
 import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
@@ -23,10 +26,11 @@ import ru.gubkin.lk.arduinoworksheet.connect.tcp.TcpHandler;
 
 public class MainActivity extends ActionBarActivity {
     private static final String BUNDLE_NT_HANDLER = "bt_handler";
-    public static boolean debug = false;
+    public static boolean debug = true;
     String makerStudio = "98:D3:31:50:4A:1B";
     private Context applicationContext;
     private Toolbar toolbar;
+    private FloatingActionButton addButton;
     //The BroadcastReceiver that listens for bluetooth broadcasts
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -40,8 +44,10 @@ public class MainActivity extends ActionBarActivity {
         }
     };
     private FrameLayout mainFrame;
-    private ConnectionHandler handler;
+    private static ConnectionHandler handler;
     private ProgressDialog progressDialog;
+    private IntentFilter filter2;
+    private IntentFilter filter3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +57,7 @@ public class MainActivity extends ActionBarActivity {
         mainFrame = (FrameLayout) findViewById(R.id.content_frame);
         setSupportActionBar(toolbar);
         progressDialog = new ProgressDialog(this);
-
+        addButton = ((FloatingActionButton) findViewById(R.id.add_f_button));
 
         if (debug) {
             startMainFragment();
@@ -61,10 +67,16 @@ public class MainActivity extends ActionBarActivity {
 //        tryToConnectBluetooth(null);
         applicationContext = getApplicationContext();
 
-        IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
-        IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        this.registerReceiver(mReceiver, filter2);
-        this.registerReceiver(mReceiver, filter3);
+        filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        registerReceiver(mReceiver, filter2);
+        registerReceiver(mReceiver, filter3);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
     }
 
     public void tryToConnectBluetooth(String device) {
@@ -89,11 +101,12 @@ public class MainActivity extends ActionBarActivity {
         if (!debug) {
             toolbar.setTitle("");
         }
+
+        addButton.setVisibility(View.GONE);
+
         MainActivityFragment componentsFragment = new MainActivityFragment();
-        componentsFragment.setHandler(handler);
-
+        componentsFragment.setRetainInstance(true);
         FragmentManager fragmentManager = getFragmentManager();
-
         fragmentManager.beginTransaction().replace(R.id.content_frame, componentsFragment).commit();
     }
 
@@ -104,9 +117,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void showDevicesList(){
-
-        toolbar.setTitle("Доступные устройства");
-
+        String c = getResources().getString(R.string.unit_celsius);
+        toolbar.setTitle("Доступные устройства" + c);
+        addButton.setVisibility(View.VISIBLE);
         SearchDevicesFragment searchFragment = new SearchDevicesFragment();
 
         FragmentManager fragmentManager = getFragmentManager();
@@ -149,6 +162,10 @@ public class MainActivity extends ActionBarActivity {
         progressDialog.show();
     }
 
+    public static ConnectionHandler getHandler() {
+        return handler;
+    }
+
     public void hideProgressDialog() {
         progressDialog.dismiss();
     }
@@ -157,3 +174,5 @@ public class MainActivity extends ActionBarActivity {
         return mainFrame;
     }
 }
+
+

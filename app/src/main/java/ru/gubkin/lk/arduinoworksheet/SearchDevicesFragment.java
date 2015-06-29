@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.shamanland.fab.FloatingActionButton;
+
 import java.util.ArrayList;
 
 import ru.gubkin.lk.arduinoworksheet.component.list.device.DeviceController;
@@ -25,9 +27,8 @@ import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
  * Created by Андрей on 07.05.2015.
  */
 public class SearchDevicesFragment extends Fragment {
-    private ArrayList<ListItem> items;
-    private ListView list;
     private DeviceController controller;
+    private FloatingActionButton button;
     private final BroadcastReceiver btReceiver = new BroadcastReceiver(){
 
         @Override
@@ -35,8 +36,8 @@ public class SearchDevicesFragment extends Fragment {
             String action = intent.getAction();
             if (action.equals(BluetoothDevice.ACTION_FOUND)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                DeviceItem item = new DeviceItem(0, DeviceType.BLUETOOTH, device.getName(), device.getAddress());
-                controller.add(item);
+                DeviceItem item = new DeviceItem(DeviceItem.DEFAULT_ID, DeviceType.BLUETOOTH, device.getName(), device.getAddress());
+                controller.add(item, false);
             }
         }
     };
@@ -52,43 +53,40 @@ public class SearchDevicesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_search, container, false);
-        list = (ListView) v.findViewById(R.id.bt_devices_lv);
+        ListView list = (ListView) v.findViewById(R.id.bt_devices_lv);
         controller = new DeviceController(getActivity());
-
-        list.setAdapter(controller.getAdapter());
-
+        controller.setList(list);
+        button = (FloatingActionButton)(getActivity()).findViewById(R.id.add_f_button);
         return v;
     }
-
-    /*private ArrayList<ListItem> getDeviceList() {
-        ArrayList<ListItem> items = new ArrayList<>();
-
-    }*/
+    
 
     @Override
     public void onResume() {
         super.onResume();
-
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        controller.registerListeners();
+        BluetoothHandler.startDiscovery((MainActivity) getActivity());
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ListItem item = items.get(position);
-                if (item.getViewType() == ListItem.ItemType.DEVICE.ordinal()) {
-                    ((MainActivity) getActivity()).tryToConnectBluetooth(item.getInfo());
-                } else {
-                    ((MainActivity) getActivity()).tryToConnectTcp(item.getInfo());
-                }
-//                getFragmentManager().beginTransaction().remove(me).commit();
+            public void onClick(View v) {
+                DeviceItem item = new DeviceItem(DeviceItem.DEFAULT_ID, DeviceType.TCP, "Новое устройство", "192.168.0.2", "2501");
+                controller.add(item, true);
+                controller.updateDialog(item);
             }
         });
-
-        BluetoothHandler.startDiscovery((MainActivity) getActivity());
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
     @Override
     public void onDestroy(){
         super.onDestroy();
-
-        list.setOnItemClickListener(null);
+        if (controller != null) {
+            controller.unregisterListeners();
+        }
 
         getActivity().unregisterReceiver(btReceiver);
     }

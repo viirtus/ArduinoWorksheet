@@ -40,8 +40,9 @@ public class LED extends Observable implements MessageListener {
         this.commandOff = commandOff;
     }
 
-    public int getImageResourse() {
-        return color.getRes();
+    public int getImageResource() {
+        if (isActive)  return color.getRes();
+        else return LedColors.OFF.getRes();
     }
 
     public void toggleState(boolean forceToggle) {
@@ -144,12 +145,12 @@ public class LED extends Observable implements MessageListener {
             setChanged();
 
             //We need just adapter refresh
-            notifyObservers(-777);
+            notifyObservers(ComponentObserver.NOTIFY_KEY);
         }
         if (message.equals(commandOff)) {
             isActive = false;
             setChanged();
-            notifyObservers(-777);
+            notifyObservers(ComponentObserver.NOTIFY_KEY);
         }
     }
 
@@ -166,21 +167,22 @@ public class LED extends Observable implements MessageListener {
     public enum LedColors {
         RED(0, 0xffB71C1C, R.drawable.red_led),
         GREEN(1, 0xff00695C, R.drawable.green_led),
-        BLUE(2, 0xff0277BD, R.drawable.blue_led);
+        BLUE(2, 0xff0277BD, R.drawable.blue_led),
+        OFF(3, 0, R.drawable.white_led);
 
 
         private final int color;
-        private final int position;
+        private final int id;
         private final int res;
 
-        LedColors(int position, int color, int res) {
-            this.position = position;
+        LedColors(int id, int color, int res) {
+            this.id = id;
             this.color = color;
             this.res = res;
         }
 
         public int getColorId() {
-            return position;
+            return id;
         }
 
         public int getColor() {

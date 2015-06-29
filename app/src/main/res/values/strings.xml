@@ -1,4 +1,4 @@
-<resources>
+﻿<resources>
     <string name="app_name">Arduino WorkSheet</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -25,5 +25,7 @@
     <string name="command">Команда:</string>
     <string name="delay">Задержка</string>
     <string name="control_device">Контроллируемые устройства</string>
+    <string name="unit_celsius">\u2103</string>
+    <string name="unit_fahrenheit">\u2109</string>
 
 </resources>

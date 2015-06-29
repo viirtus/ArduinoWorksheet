@@ -19,7 +19,7 @@ import ru.gubkin.lk.arduinoworksheet.db.LedDbHelper;
  * Created by root on 05.05.15.
  */
 public class LEDController extends Controller<LED> {
-    private static final String TITLE = "�������� ����������";
+    private static final String TITLE = "Бинарные устройства";
     private static final int HEIGHT = 125;
     private LedGridAdapter adapter;
     private ArrayList<LED> items;
@@ -37,6 +37,11 @@ public class LEDController extends Controller<LED> {
         adapter = new LedGridAdapter(context, items);
     }
 
+
+    @Override
+    public boolean isEmpty() {
+        return items.size() == 0;
+    }
 
     @Override
     public BaseAdapter getAdapter() {
@@ -82,7 +87,7 @@ public class LEDController extends Controller<LED> {
     @Override
     public void notifyChange() {
         adapter.notifyDataSetChanged();
-        initHeight(HEIGHT, 2, items.size());
+        validateView(HEIGHT, 2, items.size());
     }
 
     @Override

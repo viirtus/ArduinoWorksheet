@@ -78,7 +78,7 @@ public class SensorDialog extends Dialog {
                 if (!inputStart.equals(sensor.getStartPattern())) {
                     sensor.setStartPattern(inputStart);
                 }
-                if (!inputStart.equals(sensor.getEndPattern())) {
+                if (!inputEnd.equals(sensor.getEndPattern())) {
                     sensor.setEndPattern(inputEnd);
                 }
                 if (inputMaxValue != sensor.getMaxValue()) {

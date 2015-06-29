@@ -29,13 +29,11 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        handler = MainActivity.getHandler();
         Context context = getActivity();
-        View v = inflater.inflate(R.layout.fragment_main, container, false);
+        ListView v = (ListView) inflater.inflate(R.layout.fragment_test, container, false);
 
         int deviceId = getActivity().getIntent().getIntExtra(DEVICE_ID_EXTRA, 0);
-
-        ListView groupList = (ListView) v.findViewById(R.id.group_list);
-
 
         LEDController ledController = new LEDController(context, handler, deviceId);
         ServoController servoController = new ServoController(context, handler, deviceId);
@@ -48,7 +46,7 @@ public class MainActivityFragment extends Fragment {
         controllers.add(sensorController);
 
         ComponentsAdapter componentsAdapter = new ComponentsAdapter(context, controllers);
-        groupList.setAdapter(componentsAdapter);
+        v.setAdapter(componentsAdapter);
 
         return v;
     }
@@ -56,6 +54,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        handler = MainActivity.getHandler();
         //register all listeners
         for (Controller controller : controllers) {
             try {
@@ -70,11 +69,10 @@ public class MainActivityFragment extends Fragment {
         super.onPause();
         //unregister all listeners
         for (Controller controller : controllers) {
-            controller.unregisterListeners();
+            try {
+                controller.unregisterListeners();
+            } catch (Exception ignored) {
+            }
         }
-    }
-
-    public void setHandler(ConnectionHandler handler) {
-        this.handler = handler;
     }
 }

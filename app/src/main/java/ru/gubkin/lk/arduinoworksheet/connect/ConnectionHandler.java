@@ -42,8 +42,12 @@ public abstract class ConnectionHandler extends Handler {
      * @param what exception code
      */
     protected void fallback(int what) {
-        outputThread.interrupt();
-        receiveThread.interrupt();
+        if (outputThread != null) {
+            outputThread.interrupt();
+        }
+        if (receiveThread != null) {
+            receiveThread.interrupt();
+        }
 
         String message;
         switch (what) {

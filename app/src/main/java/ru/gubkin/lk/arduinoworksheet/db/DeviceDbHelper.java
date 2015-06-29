@@ -35,13 +35,16 @@ public class DeviceDbHelper extends DbHelper<DeviceItem> {
 
     @Override
     public void insert(DeviceItem o) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_NAME, o.getName());
-        values.put(KEY_INFO, o.getInfo());
-        values.put(KEY_TYPE, o.getType().getId());
-        long id = db.insert(TABLE, null, values);
-        o.setId((int) id);
+        //Not yet in store
+        if (o.getId() == DeviceItem.DEFAULT_ID) {
+            SQLiteDatabase db = getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(KEY_NAME, o.getName());
+            values.put(KEY_INFO, o.getInfo());
+            values.put(KEY_TYPE, o.getType().getId());
+            long id = db.insert(TABLE, null, values);
+            o.setId((int) id);
+        }
     }
 
     @Override
