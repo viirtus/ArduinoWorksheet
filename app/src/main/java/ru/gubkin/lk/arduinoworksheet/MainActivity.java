@@ -7,10 +7,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +18,10 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.shamanland.fab.FloatingActionButton;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
 import ru.gubkin.lk.arduinoworksheet.connect.bt.BluetoothHandler;
@@ -27,6 +31,7 @@ import ru.gubkin.lk.arduinoworksheet.connect.tcp.TcpHandler;
 public class MainActivity extends ActionBarActivity {
     private static final String BUNDLE_NT_HANDLER = "bt_handler";
     public static boolean debug = true;
+    private static ConnectionHandler handler;
     String makerStudio = "98:D3:31:50:4A:1B";
     private Context applicationContext;
     private Toolbar toolbar;
@@ -44,10 +49,13 @@ public class MainActivity extends ActionBarActivity {
         }
     };
     private FrameLayout mainFrame;
-    private static ConnectionHandler handler;
     private ProgressDialog progressDialog;
     private IntentFilter filter2;
     private IntentFilter filter3;
+
+    public static ConnectionHandler getHandler() {
+        return handler;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,10 +135,11 @@ public class MainActivity extends ActionBarActivity {
         fragmentManager.beginTransaction().replace(R.id.content_frame, searchFragment).addToBackStack(null).commit();
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
+        SimpleDateFormat formater = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.US);
+        Log.i("TEST", formater.format(new Date()));
     }
 
     @Override
@@ -160,10 +169,6 @@ public class MainActivity extends ActionBarActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();
-    }
-
-    public static ConnectionHandler getHandler() {
-        return handler;
     }
 
     public void hideProgressDialog() {

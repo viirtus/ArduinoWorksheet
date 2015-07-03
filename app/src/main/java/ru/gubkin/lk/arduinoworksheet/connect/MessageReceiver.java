@@ -17,6 +17,7 @@ public class MessageReceiver extends Thread {
     private final Handler handler;
     private final InputStream inputStream;
     private ArrayList<Handler> handlers;
+    private ReceiverListener listener;
 
     public MessageReceiver (Handler handler, InputStream inputStream) {
         this.handler = handler;
@@ -32,8 +33,13 @@ public class MessageReceiver extends Thread {
             try {
                 while ((line = reader.readLine()) != null) {
                     Log.i(TAG, line);
+                    //Notify all handlers
                     for (Handler handler : handlers) {
                         handler.obtainMessage(0, line).sendToTarget();
+                    }
+                    //and listener
+                    if (listener != null) {
+                        listener.onMessageReceive(line);
                     }
                 }
             } catch (IOException e) {
@@ -47,4 +53,7 @@ public class MessageReceiver extends Thread {
         handlers.add(handler);
     }
 
+    public void setListener(ReceiverListener listener) {
+        this.listener = listener;
+    }
 }

@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
  * Created by Андрей on 10.05.2015.
  */
 public class MessageHandler extends Handler {
+
     String TAG = "MESSAGE_HANDLER";
     ArrayList<MessageListener> listeners;
 
@@ -55,4 +56,5 @@ public class MessageHandler extends Handler {
 //        String pattern = Pattern.quote(pattern1)
         return out;
     }
+
 }

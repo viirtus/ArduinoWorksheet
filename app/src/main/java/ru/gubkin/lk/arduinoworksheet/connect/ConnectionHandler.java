@@ -9,15 +9,21 @@ public abstract class ConnectionHandler extends Handler {
     public final static int OUTPUT_EXCEPTION = -512;
     public final static int INPUT_EXCEPTION = -1024;
     public final static int CONNECTION_EXCEPTION = -2048;
-
+    protected final MainActivity activity;
     protected MessageReceiver receiveThread;
     protected OutputScheduler outputThread;
-
-    protected final MainActivity activity;
 
     protected ConnectionHandler(Looper looper, MainActivity activity) {
         super(looper);
         this.activity = activity;
+    }
+
+    public void setReceiverListener(ReceiverListener listener) {
+        receiveThread.setListener(listener);
+    }
+
+    public void setOutputListener(OutputListener listener) {
+        outputThread.setListener(listener);
     }
 
     /**

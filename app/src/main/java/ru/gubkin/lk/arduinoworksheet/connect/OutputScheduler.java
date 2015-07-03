@@ -15,6 +15,7 @@ public class OutputScheduler extends Thread {
     private Handler handler;
     private OutputStream outputStream;
     private String schedule = "";
+    private OutputListener listener;
 
     public OutputScheduler (Handler handler, OutputStream outputStream) {
         this.handler = handler;
@@ -31,6 +32,9 @@ public class OutputScheduler extends Thread {
                 try {
                     outputStream.write(msgBuffer);
                     outputStream.flush();
+                    if (listener != null) {
+                        listener.onOutputMessage(schedule);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                     fallback();
@@ -46,5 +50,10 @@ public class OutputScheduler extends Thread {
 
     public void setSchedule(String schedule) {
         this.schedule = schedule;
+    }
+
+    public void setListener(OutputListener listener) {
+
+        this.listener = listener;
     }
 }

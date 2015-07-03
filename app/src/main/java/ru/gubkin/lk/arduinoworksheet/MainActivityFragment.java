@@ -15,6 +15,7 @@ import ru.gubkin.lk.arduinoworksheet.component.Controller;
 import ru.gubkin.lk.arduinoworksheet.component.led.LEDController;
 import ru.gubkin.lk.arduinoworksheet.component.sensor.SensorController;
 import ru.gubkin.lk.arduinoworksheet.component.servo.ServoController;
+import ru.gubkin.lk.arduinoworksheet.component.terminal.TerminalController;
 import ru.gubkin.lk.arduinoworksheet.connect.ConnectionHandler;
 
 
@@ -39,11 +40,13 @@ public class MainActivityFragment extends Fragment {
         ServoController servoController = new ServoController(context, handler, deviceId);
 
         SensorController sensorController = new SensorController(context, handler, deviceId);
+        TerminalController terminalController = new TerminalController(context, handler, deviceId);
 
         controllers = new ArrayList<>();
         controllers.add(ledController);
         controllers.add(servoController);
         controllers.add(sensorController);
+        controllers.add(terminalController);
 
         ComponentsAdapter componentsAdapter = new ComponentsAdapter(context, controllers);
         v.setAdapter(componentsAdapter);
