@@ -13,9 +13,20 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:gravity="bottom"
         android:maxLines="10"
         android:singleLine="false"
-        android:text="Medium Text \n hello \n world\n world\n world\n world\n world\n world\n world\n world\n world\n world\n world\n world\n world\n world\n world\n world"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="jkhk" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/add_command_btn"
+        android:layout_below="@+id/text_terminal"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>

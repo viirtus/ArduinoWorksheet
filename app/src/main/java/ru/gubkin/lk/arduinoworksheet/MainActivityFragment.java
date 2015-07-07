@@ -73,7 +73,7 @@ public class MainActivityFragment extends Fragment {
         //unregister all listeners
         for (Controller controller : controllers) {
             try {
-                controller.unregisterListeners();
+                //controller.unregisterListeners();
             } catch (Exception ignored) {
             }
         }
